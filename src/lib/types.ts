@@ -7,6 +7,7 @@ export const personalDetailsSchema = z.object({
   website: z.string().url('Invalid URL').optional().or(z.literal('')),
   location: z.string().optional(),
   summary: z.string().optional(),
+  role: z.string().optional(),
 });
 export type PersonalDetails = z.infer<typeof personalDetailsSchema>;
 
@@ -17,6 +18,7 @@ export const experienceSchema = z.object({
   startDate: z.string().optional(),
   endDate: z.string().optional(),
   description: z.string().optional(),
+  location: z.string().optional(),
 });
 export type Experience = z.infer<typeof experienceSchema>;
 
@@ -73,6 +75,7 @@ export type DesignState = z.infer<typeof designSchema>;
 export const defaultResumeData: ResumeData = {
     personalDetails: {
         name: 'CHETAN BHATI',
+        role: 'Senior Django Developer',
         email: 'bhatichetan147@gmail.com',
         phone: '+917024822271',
         website: '',
@@ -86,6 +89,7 @@ export const defaultResumeData: ResumeData = {
             role: 'Senior Django Developer',
             startDate: 'May 2022',
             endDate: 'Current',
+            location: 'Indore',
             description: 'I have grown significantly as a developer, becoming proficient in various skills and technologies essential for modern web development. In my role, I am engaged in the complete software development lifecycle, including application development, deployment, and maintenance.',
         },
     ],

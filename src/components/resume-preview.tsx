@@ -66,7 +66,8 @@ const ResumePreview = React.forwardRef<HTMLDivElement>((props, ref) => {
   const DottedLine = () => <div className="flex-grow border-b border-dotted border-gray-400 mx-2"></div>;
 
   return (
-    <div ref={ref} id="resume-preview" className="bg-white text-gray-800 shadow-lg rounded-lg w-full max-w-[210mm] min-h-[297mm] mx-auto p-10 transition-all duration-300 print:shadow-none" style={styles}>
+    <div ref={ref} id="resume-preview" className="bg-white text-gray-800 shadow-lg rounded-lg w-full max-w-[210mm] min-h-[297mm] mx-auto p-10 transition-all duration-300 print:shadow-none">
+       <div style={styles}>
         {/* Header */}
         <header className="text-center mb-6">
             <h1 className="text-3xl font-bold tracking-wider">{personalDetails.name}</h1>
@@ -87,7 +88,7 @@ const ResumePreview = React.forwardRef<HTMLDivElement>((props, ref) => {
         )}
 
         {/* Experience */}
-        {experience.length > 0 && (
+        {experience && experience.length > 0 && (
             <Section title="Experience">
                 {experience.map(exp => (
                     <div key={exp.id} className="mb-4 last:mb-0">
@@ -107,7 +108,7 @@ const ResumePreview = React.forwardRef<HTMLDivElement>((props, ref) => {
         )}
         
         {/* Education */}
-        {education.length > 0 && (
+        {education && education.length > 0 && (
             <Section title="Education">
                 {education.map(edu => (
                     <div key={edu.id} className="mb-3 last:mb-0">
@@ -125,7 +126,7 @@ const ResumePreview = React.forwardRef<HTMLDivElement>((props, ref) => {
         )}
 
         {/* Skills */}
-        {skills.length > 0 && (
+        {skills && skills.length > 0 && (
             <Section title="Skills">
                 <div className="grid grid-cols-2 gap-x-8 gap-y-1 text-sm">
                     {skills.map(skill => (
@@ -139,7 +140,7 @@ const ResumePreview = React.forwardRef<HTMLDivElement>((props, ref) => {
         )}
 
         {/* Achievements */}
-        {achievements.length > 0 && (
+        {achievements && achievements.length > 0 && (
             <Section title="Achievements" className="mt-4">
                 <div className="space-y-2">
                     {achievements.map(ach => (
@@ -153,7 +154,7 @@ const ResumePreview = React.forwardRef<HTMLDivElement>((props, ref) => {
         )}
 
         {/* Projects */}
-        {projects.length > 0 && (
+        {projects && projects.length > 0 && (
             <Section title="Projects">
                  {projects.map(proj => (
                     <div key={proj.id} className="mb-3 last:mb-0 text-sm">
@@ -164,6 +165,7 @@ const ResumePreview = React.forwardRef<HTMLDivElement>((props, ref) => {
                 ))}
             </Section>
         )}
+      </div>
     </div>
   );
 });
