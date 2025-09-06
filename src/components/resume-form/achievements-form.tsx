@@ -18,7 +18,7 @@ export default function AchievementsForm() {
 
   const form = useForm<{ achievements: Achievement[] }>({
     resolver: zodResolver(resumeDataSchema.pick({ achievements: true })),
-    defaultValues: { achievements: resumeData.achievements },
+    defaultValues: { achievements: resumeData.achievements || [] },
     mode: 'onBlur'
   });
 
@@ -28,10 +28,10 @@ export default function AchievementsForm() {
   });
   
   useEffect(() => {
-    if (isInitialized) {
+    if (isInitialized && resumeData.achievements) {
       setOpenItems(resumeData.achievements.map(a => a.id));
     }
-  }, [isInitialized]);
+  }, [isInitialized, resumeData.achievements]);
 
   const handleBlur = () => {
     form.trigger();
