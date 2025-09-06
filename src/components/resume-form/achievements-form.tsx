@@ -29,16 +29,16 @@ export default function AchievementsForm() {
   
   useEffect(() => {
     if (isInitialized && resumeData.achievements) {
-        // Only set open items if the number of items changes, to avoid collapsing on edit
-        if(openItems.length !== resumeData.achievements.length) {
-            setOpenItems(resumeData.achievements.map(a => a.id));
-        }
+      form.reset({ achievements: resumeData.achievements });
+      if (openItems.length !== resumeData.achievements.length) {
+        setOpenItems(resumeData.achievements.map(a => a.id));
+      }
     }
   // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [isInitialized, resumeData.achievements]);
+  }, [isInitialized, resumeData.achievements, form]);
 
 
-  const handleBlur = () => {
+  const updateStore = () => {
     form.trigger();
     const formData = form.getValues();
     setResumeData(draft => {
@@ -55,7 +55,7 @@ export default function AchievementsForm() {
   const handleRemove = (index: number, id: string) => {
     remove(index);
     setOpenItems(prev => prev.filter(item => item !== id));
-    handleBlur();
+    updateStore();
   }
 
   return (
@@ -66,7 +66,7 @@ export default function AchievementsForm() {
       </CardHeader>
       <CardContent>
         <Form {...form}>
-          <div className="space-y-4" onBlur={handleBlur}>
+          <div className="space-y-4">
             <Accordion type="multiple" value={openItems} onValueChange={setOpenItems} className="w-full">
               {fields.map((field, index) => (
                 <AccordionItem key={field.id} value={field.id} className="border-b-0">
@@ -89,6 +89,10 @@ export default function AchievementsForm() {
                                 placeholder="e.g., Won 'Best Project' award at the company hackathon."
                                 {...field}
                                 rows={3}
+                                onBlur={() => {
+                                    field.onBlur();
+                                    updateStore();
+                                }}
                                 value={field.value ?? ''}
                               />
                             </FormControl>
