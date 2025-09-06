@@ -16,6 +16,7 @@ export default function PersonalDetailsForm() {
   const form = useForm<PersonalDetails>({
     resolver: zodResolver(personalDetailsSchema),
     defaultValues: resumeData.personalDetails,
+    mode: 'onBlur'
   });
 
   useEffect(() => {
@@ -41,14 +42,14 @@ export default function PersonalDetailsForm() {
       </CardHeader>
       <CardContent>
         <Form {...form}>
-          <form className="space-y-4">
+          <form className="space-y-4" onBlur={() => form.handleSubmit(() => {})()}>
             <FormField
               control={form.control}
               name="name"
               render={({ field }) => (
                 <FormItem>
                   <FormLabel>Full Name</FormLabel>
-                  <FormControl><Input placeholder="John Doe" {...field} /></FormControl>
+                  <FormControl><Input placeholder="John Doe" {...field} onBlur={field.onBlur} /></FormControl>
                   <FormMessage />
                 </FormItem>
               )}
@@ -59,7 +60,7 @@ export default function PersonalDetailsForm() {
               render={({ field }) => (
                 <FormItem>
                   <FormLabel>Email</FormLabel>
-                  <FormControl><Input placeholder="john.doe@email.com" {...field} /></FormControl>
+                  <FormControl><Input placeholder="john.doe@email.com" {...field} onBlur={field.onBlur} /></FormControl>
                   <FormMessage />
                 </FormItem>
               )}
@@ -70,7 +71,7 @@ export default function PersonalDetailsForm() {
               render={({ field }) => (
                 <FormItem>
                   <FormLabel>Phone</FormLabel>
-                  <FormControl><Input placeholder="123-456-7890" {...field} value={field.value ?? ''} /></FormControl>
+                  <FormControl><Input placeholder="123-456-7890" {...field} value={field.value ?? ''} onBlur={field.onBlur} /></FormControl>
                   <FormMessage />
                 </FormItem>
               )}
@@ -81,7 +82,7 @@ export default function PersonalDetailsForm() {
               render={({ field }) => (
                 <FormItem>
                   <FormLabel>Website / Portfolio</FormLabel>
-                  <FormControl><Input placeholder="https://johndoe.dev" {...field} value={field.value ?? ''} /></FormControl>
+                  <FormControl><Input placeholder="https://johndoe.dev" {...field} value={field.value ?? ''} onBlur={field.onBlur} /></FormControl>
                   <FormMessage />
                 </FormItem>
               )}
@@ -92,7 +93,7 @@ export default function PersonalDetailsForm() {
               render={({ field }) => (
                 <FormItem>
                   <FormLabel>Location</FormLabel>
-                  <FormControl><Input placeholder="San Francisco, CA" {...field} value={field.value ?? ''} /></FormControl>
+                  <FormControl><Input placeholder="San Francisco, CA" {...field} value={field.value ?? ''} onBlur={field.onBlur} /></FormControl>
                   <FormMessage />
                 </FormItem>
               )}
@@ -103,7 +104,7 @@ export default function PersonalDetailsForm() {
               render={({ field }) => (
                 <FormItem>
                   <FormLabel>Professional Summary</FormLabel>
-                  <FormControl><Textarea placeholder="A passionate developer..." {...field} rows={5} value={field.value ?? ''} /></FormControl>
+                  <FormControl><Textarea placeholder="A passionate developer..." {...field} rows={5} value={field.value ?? ''} onBlur={field.onBlur} /></FormControl>
                   <FormMessage />
                 </FormItem>
               )}

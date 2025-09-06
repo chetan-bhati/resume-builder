@@ -19,6 +19,7 @@ export default function SkillsForm() {
   const form = useForm<{ skills: Skill[] }>({
     resolver: zodResolver(resumeDataSchema.pick({ skills: true })),
     defaultValues: { skills: resumeData.skills },
+    mode: 'onBlur'
   });
 
   const { fields, append, remove } = useFieldArray({
@@ -34,9 +35,11 @@ export default function SkillsForm() {
   
   useEffect(() => {
     const subscription = form.watch((value) => {
+      if (value.skills) {
         setResumeData(draft => {
             draft.skills = value.skills as Skill[];
         });
+      }
     });
     return () => subscription.unsubscribe();
   }, [form, setResumeData]);
@@ -79,7 +82,8 @@ export default function SkillsForm() {
                     placeholder="e.g., React" 
                     value={newSkill}
                     onChange={e => setNewSkill(e.target.value)}
-                    onKeyDown={handleKeyDown} 
+                    onKeyDown={handleKeyDown}
+                    onBlur={() => form.handleSubmit(() => {})()}
                   />
                   <Button type="button" onClick={handleAddSkill}><Plus className="mr-2 h-4 w-4" /> Add Skill</Button>
                 </div>

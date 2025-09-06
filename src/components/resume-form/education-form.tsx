@@ -19,6 +19,7 @@ export default function EducationForm() {
   const form = useForm<{ education: Education[] }>({
     resolver: zodResolver(resumeDataSchema.pick({ education: true })),
     defaultValues: { education: resumeData.education },
+    mode: 'onBlur'
   });
 
   const { fields, append, remove } = useFieldArray({
@@ -34,9 +35,11 @@ export default function EducationForm() {
 
   useEffect(() => {
     const subscription = form.watch((value) => {
+      if (value.education) {
         setResumeData(draft => {
             draft.education = value.education as Education[];
         });
+      }
     });
     return () => subscription.unsubscribe();
   }, [form, setResumeData]);
@@ -61,13 +64,13 @@ export default function EducationForm() {
                   </div>
                   <AccordionContent className="p-4 border border-t-0 rounded-b-md">
                     <div className="space-y-4">
-                      <FormField control={form.control} name={`education.${index}.institution`} render={({ field }) => ( <FormItem><FormLabel>Institution</FormLabel><FormControl><Input {...field} /></FormControl><FormMessage /></FormItem> )} />
-                      <FormField control={form.control} name={`education.${index}.degree`} render={({ field }) => ( <FormItem><FormLabel>Degree/Certificate</FormLabel><FormControl><Input {...field} /></FormControl><FormMessage /></FormItem> )} />
+                      <FormField control={form.control} name={`education.${index}.institution`} render={({ field }) => ( <FormItem><FormLabel>Institution</FormLabel><FormControl><Input {...field} onBlur={field.onBlur} /></FormControl><FormMessage /></FormItem> )} />
+                      <FormField control={form.control} name={`education.${index}.degree`} render={({ field }) => ( <FormItem><FormLabel>Degree/Certificate</FormLabel><FormControl><Input {...field} onBlur={field.onBlur} /></FormControl><FormMessage /></FormItem> )} />
                       <div className="grid grid-cols-2 gap-4">
-                        <FormField control={form.control} name={`education.${index}.startDate`} render={({ field }) => ( <FormItem><FormLabel>Start Date</FormLabel><FormControl><Input placeholder="e.g., Aug 2016" {...field} value={field.value ?? ''}/></FormControl><FormMessage /></FormItem> )} />
-                        <FormField control={form.control} name={`education.${index}.endDate`} render={({ field }) => ( <FormItem><FormLabel>End Date</FormLabel><FormControl><Input placeholder="e.g., May 2020" {...field} value={field.value ?? ''} /></FormControl><FormMessage /></FormItem> )} />
+                        <FormField control={form.control} name={`education.${index}.startDate`} render={({ field }) => ( <FormItem><FormLabel>Start Date</FormLabel><FormControl><Input placeholder="e.g., Aug 2016" {...field} value={field.value ?? ''} onBlur={field.onBlur} /></FormControl><FormMessage /></FormItem> )} />
+                        <FormField control={form.control} name={`education.${index}.endDate`} render={({ field }) => ( <FormItem><FormLabel>End Date</FormLabel><FormControl><Input placeholder="e.g., May 2020" {...field} value={field.value ?? ''} onBlur={field.onBlur} /></FormControl><FormMessage /></FormItem> )} />
                       </div>
-                      <FormField control={form.control} name={`education.${index}.description`} render={({ field }) => ( <FormItem><FormLabel>Description</FormLabel><FormControl><Textarea placeholder="e.g., GPA, Honors..." {...field} rows={2} value={field.value ?? ''} /></FormControl><FormMessage /></FormItem> )} />
+                      <FormField control={form.control} name={`education.${index}.description`} render={({ field }) => ( <FormItem><FormLabel>Description</FormLabel><FormControl><Textarea placeholder="e.g., GPA, Honors..." {...field} rows={2} value={field.value ?? ''} onBlur={field.onBlur} /></FormControl><FormMessage /></FormItem> )} />
                     </div>
                   </AccordionContent>
                 </AccordionItem>

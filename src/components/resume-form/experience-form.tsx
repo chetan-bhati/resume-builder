@@ -19,6 +19,7 @@ export default function ExperienceForm() {
   const form = useForm<{ experience: Experience[] }>({
     resolver: zodResolver(resumeDataSchema.pick({ experience: true })),
     defaultValues: { experience: resumeData.experience },
+    mode: 'onBlur'
   });
 
   const { fields, append, remove } = useFieldArray({
@@ -34,9 +35,11 @@ export default function ExperienceForm() {
 
   useEffect(() => {
     const subscription = form.watch((value) => {
+      if (value.experience) {
         setResumeData(draft => {
             draft.experience = value.experience as Experience[];
         });
+      }
     });
     return () => subscription.unsubscribe();
   }, [form, setResumeData]);
@@ -61,13 +64,13 @@ export default function ExperienceForm() {
                   </div>
                   <AccordionContent className="p-4 border border-t-0 rounded-b-md">
                     <div className="space-y-4">
-                      <FormField control={form.control} name={`experience.${index}.role`} render={({ field }) => ( <FormItem><FormLabel>Role</FormLabel><FormControl><Input {...field} /></FormControl><FormMessage /></FormItem> )} />
-                      <FormField control={form.control} name={`experience.${index}.company`} render={({ field }) => ( <FormItem><FormLabel>Company</FormLabel><FormControl><Input {...field} /></FormControl><FormMessage /></FormItem> )} />
+                      <FormField control={form.control} name={`experience.${index}.role`} render={({ field }) => ( <FormItem><FormLabel>Role</FormLabel><FormControl><Input {...field} onBlur={field.onBlur} /></FormControl><FormMessage /></FormItem> )} />
+                      <FormField control={form.control} name={`experience.${index}.company`} render={({ field }) => ( <FormItem><FormLabel>Company</FormLabel><FormControl><Input {...field} onBlur={field.onBlur} /></FormControl><FormMessage /></FormItem> )} />
                       <div className="grid grid-cols-2 gap-4">
-                        <FormField control={form.control} name={`experience.${index}.startDate`} render={({ field }) => ( <FormItem><FormLabel>Start Date</FormLabel><FormControl><Input placeholder="e.g., Jan 2020" {...field} value={field.value ?? ''}/></FormControl><FormMessage /></FormItem> )} />
-                        <FormField control={form.control} name={`experience.${index}.endDate`} render={({ field }) => ( <FormItem><FormLabel>End Date</FormLabel><FormControl><Input placeholder="e.g., Present" {...field} value={field.value ?? ''}/></FormControl><FormMessage /></FormItem> )} />
+                        <FormField control={form.control} name={`experience.${index}.startDate`} render={({ field }) => ( <FormItem><FormLabel>Start Date</FormLabel><FormControl><Input placeholder="e.g., Jan 2020" {...field} value={field.value ?? ''} onBlur={field.onBlur} /></FormControl><FormMessage /></FormItem> )} />
+                        <FormField control={form.control} name={`experience.${index}.endDate`} render={({ field }) => ( <FormItem><FormLabel>End Date</FormLabel><FormControl><Input placeholder="e.g., Present" {...field} value={field.value ?? ''} onBlur={field.onBlur} /></FormControl><FormMessage /></FormItem> )} />
                       </div>
-                      <FormField control={form.control} name={`experience.${index}.description`} render={({ field }) => ( <FormItem><FormLabel>Description (use • for bullet points)</FormLabel><FormControl><Textarea placeholder="• Achieved X by doing Y..." {...field} rows={4} value={field.value ?? ''}/></FormControl><FormMessage /></FormItem> )} />
+                      <FormField control={form.control} name={`experience.${index}.description`} render={({ field }) => ( <FormItem><FormLabel>Description (use • for bullet points)</FormLabel><FormControl><Textarea placeholder="• Achieved X by doing Y..." {...field} rows={4} value={field.value ?? ''} onBlur={field.onBlur} /></FormControl><FormMessage /></FormItem> )} />
                     </div>
                   </AccordionContent>
                 </AccordionItem>
