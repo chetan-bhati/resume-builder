@@ -5,12 +5,16 @@ import { useResumeStore } from '@/hooks/use-resume-store.tsx';
 import { Mail, Phone, Globe, MapPin, ExternalLink, Briefcase, GraduationCap, Star, Lightbulb, Trophy } from 'lucide-react';
 import { Skeleton } from './ui/skeleton';
 
-const Section = ({ title, children, className }: { title: string, children: React.ReactNode, className?: string }) => (
-    <section className={`mb-4 ${className}`}>
-        <div className="text-center mb-2">
-            <h2 className="text-sm font-bold uppercase tracking-widest text-white px-4 py-1 inline-block" style={{ backgroundColor: 'var(--preview-primary-color)' }}>{title}</h2>
+const Section = ({ title, icon, children, className }: { title: string, icon: React.ReactNode, children: React.ReactNode, className?: string }) => (
+    <section className={`mb-6 ${className}`}>
+        <h2 className="flex items-center text-lg font-bold uppercase mb-2" style={{ color: 'var(--preview-primary-color)' }}>
+            {icon}
+            <span className="ml-2">{title}</span>
+        </h2>
+        <div className="border-t-2" style={{ borderColor: 'var(--preview-primary-color)' }}></div>
+        <div className="pt-3">
+            {children}
         </div>
-        {children}
     </section>
 );
 
@@ -19,18 +23,13 @@ const DescriptionRenderer = ({ content }: { content?: string }) => {
     if (!content) return null;
     const lines = content.split('\n');
     return (
-        <div className="text-sm text-gray-700 space-y-1.5">
+        <ul className="list-disc pl-5 space-y-1 text-sm text-gray-700">
             {lines.map((line, index) => {
                  const cleanedLine = line.replace(/^•\s*/, '').trim();
                  if (!cleanedLine) return null;
-                 return (
-                    <div key={index} className="flex">
-                        <span className="mr-2 font-bold" style={{color: 'var(--preview-primary-color)'}}>•</span>
-                        <p className="flex-1">{cleanedLine}</p>
-                    </div>
-                 );
+                 return <li key={index}>{cleanedLine}</li>;
             })}
-        </div>
+        </ul>
     );
 };
 
@@ -62,46 +61,42 @@ const ResumePreview = React.forwardRef<HTMLDivElement>((props, ref) => {
         </div>
     );
   }
-  
-  const DottedLine = () => <div className="flex-grow border-b border-dotted border-gray-400 mx-2"></div>;
 
   return (
-    <div ref={ref} id="resume-preview" className="bg-white text-gray-800 shadow-lg rounded-lg w-full max-w-[210mm] min-h-[297mm] mx-auto p-10 transition-all duration-300 print:shadow-none">
+    <div ref={ref} id="resume-preview" className="bg-white text-gray-800 shadow-lg rounded-lg w-full max-w-[210mm] min-h-[297mm] mx-auto p-12 transition-all duration-300 print:shadow-none">
        <div style={styles}>
         {/* Header */}
-        <header className="text-center mb-6">
-            <h1 className="text-3xl font-bold tracking-wider">{personalDetails.name}</h1>
-             {personalDetails.role && <p className="text-lg mt-1 font-medium">{personalDetails.role}</p>}
-            <div className="flex justify-center items-center gap-x-6 gap-y-1 mt-2 text-xs flex-wrap">
-                {personalDetails.email && <a href={`mailto:${personalDetails.email}`} className="hover:underline">{personalDetails.email}</a>}
-                {personalDetails.phone && <span>{personalDetails.phone}</span>}
-                {personalDetails.website && <a href={personalDetails.website} target="_blank" rel="noreferrer noopener" className="hover:underline">{personalDetails.website}</a>}
+        <header className="text-center mb-8">
+            <h1 className="text-4xl font-bold tracking-widest">{personalDetails.name}</h1>
+            {personalDetails.role && <p className="text-xl mt-1 font-medium" style={{color: 'var(--preview-primary-color)'}}>{personalDetails.role}</p>}
+            <div className="flex justify-center items-center gap-x-4 gap-y-1 mt-4 text-sm flex-wrap">
+                {personalDetails.email && <a href={`mailto:${personalDetails.email}`} className="flex items-center gap-1 hover:underline"><Mail className="w-4 h-4" /> {personalDetails.email}</a>}
+                {personalDetails.phone && <span className="flex items-center gap-1"><Phone className="w-4 h-4" /> {personalDetails.phone}</span>}
+                {personalDetails.website && <a href={personalDetails.website} target="_blank" rel="noreferrer noopener" className="flex items-center gap-1 hover:underline"><Globe className="w-4 h-4" /> {personalDetails.website}</a>}
+                {personalDetails.location && <span className="flex items-center gap-1"><MapPin className="w-4 h-4" /> {personalDetails.location}</span>}
             </div>
-             <hr className="my-4 border-t-2 border-gray-300" />
         </header>
 
         {/* Summary */}
         {personalDetails.summary && (
-             <Section title="Summary">
-                <p className="text-sm text-center">{personalDetails.summary}</p>
-            </Section>
+            <section className="mb-6">
+                <p className="text-center text-sm">{personalDetails.summary}</p>
+            </section>
         )}
 
         {/* Experience */}
         {experience && experience.length > 0 && (
-            <Section title="Experience">
+            <Section title="Work Experience" icon={<Briefcase className="w-5 h-5" />}>
                 {experience.map(exp => (
                     <div key={exp.id} className="mb-4 last:mb-0">
-                        <div className="flex justify-between items-baseline">
-                            <h3 className="font-bold text-sm flex items-center"><span className="text-xl mr-2" style={{color: 'var(--preview-primary-color)'}}>&#9670;</span>{exp.role}, <span className="font-normal italic ml-1">{exp.company}</span></h3>
-                            <div className="text-xs font-medium text-gray-600 text-right">
-                                <div>{exp.startDate} &mdash; {exp.endDate}</div>
+                        <div className="flex justify-between items-baseline mb-1">
+                            <h3 className="font-bold text-base">{exp.role}, <span className="font-normal italic">{exp.company}</span></h3>
+                            <div className="text-sm font-medium text-gray-600 text-right">
+                                <div>{exp.startDate} &ndash; {exp.endDate}</div>
                                 {exp.location && <div className="italic">{exp.location}</div>}
                             </div>
                         </div>
-                        <div className="pl-6 mt-1">
-                            <DescriptionRenderer content={exp.description} />
-                        </div>
+                        <DescriptionRenderer content={exp.description} />
                     </div>
                 ))}
             </Section>
@@ -109,16 +104,16 @@ const ResumePreview = React.forwardRef<HTMLDivElement>((props, ref) => {
         
         {/* Education */}
         {education && education.length > 0 && (
-            <Section title="Education">
+            <Section title="Education" icon={<GraduationCap className="w-5 h-5" />}>
                 {education.map(edu => (
                     <div key={edu.id} className="mb-3 last:mb-0">
                         <div className="flex justify-between items-baseline">
-                             <h3 className="font-bold text-sm flex items-center"><span className="text-xl mr-2" style={{color: 'var(--preview-primary-color)'}}>&#9670;</span>{edu.institution}</h3>
-                            <div className="text-xs font-medium text-gray-600">{edu.startDate} &mdash; {edu.endDate}</div>
+                            <h3 className="font-bold text-base">{edu.institution}</h3>
+                            <p className="text-sm font-medium text-gray-600">{edu.startDate} &ndash; {edu.endDate}</p>
                         </div>
-                        <div className="pl-6 flex justify-between items-baseline">
-                            <h4 className="text-sm italic">{edu.degree}</h4>
-                             <p className="text-xs italic text-gray-600">{edu.description}</p>
+                        <div className="flex justify-between items-baseline">
+                            <h4 className="text-base italic">{edu.degree}</h4>
+                             <p className="text-sm italic text-gray-600">{edu.description}</p>
                         </div>
                     </div>
                 ))}
@@ -127,27 +122,10 @@ const ResumePreview = React.forwardRef<HTMLDivElement>((props, ref) => {
 
         {/* Skills */}
         {skills && skills.length > 0 && (
-            <Section title="Skills">
-                <div className="grid grid-cols-2 gap-x-8 gap-y-1 text-sm">
+            <Section title="Skills" icon={<Star className="w-5 h-5" />}>
+                <div className="flex flex-wrap gap-x-4 gap-y-2">
                     {skills.map(skill => (
-                        <div key={skill.id} className="flex items-center">
-                           <span>{skill.name}</span>
-                           <DottedLine />
-                        </div>
-                    ))}
-                </div>
-            </Section>
-        )}
-
-        {/* Achievements */}
-        {achievements && achievements.length > 0 && (
-            <Section title="Achievements" className="mt-4">
-                <div className="space-y-2">
-                    {achievements.map(ach => (
-                        <div key={ach.id} className="text-sm text-gray-800 flex">
-                           <span className="font-bold mr-2">&#8226;</span>
-                           <p className="flex-1">{ach.description.replace(/^•\s*/, '')}</p>
-                        </div>
+                        <span key={skill.id} className="bg-gray-200 text-gray-800 text-sm font-medium px-3 py-1 rounded-full">{skill.name}</span>
                     ))}
                 </div>
             </Section>
@@ -155,14 +133,25 @@ const ResumePreview = React.forwardRef<HTMLDivElement>((props, ref) => {
 
         {/* Projects */}
         {projects && projects.length > 0 && (
-            <Section title="Projects">
+            <Section title="Projects" icon={<Lightbulb className="w-5 h-5" />}>
                  {projects.map(proj => (
-                    <div key={proj.id} className="mb-3 last:mb-0 text-sm">
-                        <h3 className="font-bold text-sm inline">{proj.name}: </h3>
-                        <p className="inline">{proj.description}</p>
-                        {proj.url && <a href={proj.url} target="_blank" rel="noopener noreferrer" className="text-primary hover:underline ml-2 text-blue-600">{proj.url}</a>}
+                    <div key={proj.id} className="mb-3 last:mb-0">
+                        <h3 className="font-bold text-base inline">{proj.name}</h3>
+                        {proj.url && <a href={proj.url} target="_blank" rel="noopener noreferrer" className="text-primary hover:underline ml-2"><ExternalLink className="inline w-4 h-4" /></a>}
+                        <DescriptionRenderer content={proj.description} />
                     </div>
                 ))}
+            </Section>
+        )}
+        
+        {/* Achievements */}
+        {achievements && achievements.length > 0 && (
+            <Section title="Achievements" icon={<Trophy className="w-5 h-5" />}>
+                <ul className="list-disc pl-5 space-y-1 text-sm text-gray-700">
+                    {achievements.map(ach => (
+                        <li key={ach.id}>{ach.description.replace(/^•\s*/, '')}</li>
+                    ))}
+                </ul>
             </Section>
         )}
       </div>
