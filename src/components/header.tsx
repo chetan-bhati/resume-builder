@@ -3,7 +3,6 @@
 import React from 'react';
 import { Button } from '@/components/ui/button';
 import { Download } from 'lucide-react';
-import { useReactToPrint } from 'react-to-print';
 import AiOptimizerDialog from './ai-optimizer-dialog';
 import DesignPanel from './design-panel';
 
@@ -12,27 +11,15 @@ interface HeaderProps {
 }
 
 export default function Header({ previewRef }: HeaderProps) {
-    const handlePrint = useReactToPrint({
-        content: () => previewRef.current,
-        documentTitle: 'resume',
-        onPrintError: (error) => console.log(error),
-        pageStyle: `
-        @media print {
-            @page {
-              size: A4;
-              margin: 0;
-            }
-            html, body {
-                height: initial !important;
-                overflow: initial !important;
-                -webkit-print-color-adjust: exact;
-                color-adjust: exact;
-            }
-        }`,
-    });
+    const handlePrint = () => {
+        const printContent = previewRef.current;
+        if (printContent) {
+           window.print();
+        }
+    };
 
     return (
-        <header className="flex items-center justify-between p-4 border-b bg-card flex-shrink-0 z-10">
+        <header className="flex items-center justify-between p-4 border-b bg-card flex-shrink-0 z-10 print:hidden">
             <h1 className="text-xl font-bold text-primary">ResumeForge</h1>
             <div className="flex items-center gap-2">
                 <AiOptimizerDialog />

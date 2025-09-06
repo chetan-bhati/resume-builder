@@ -86,3 +86,34 @@ body {
     @apply bg-background text-foreground;
   }
 }
+
+@media print {
+  body, html {
+    background: #fff;
+    -webkit-print-color-adjust: exact;
+    color-adjust: exact;
+  }
+  main {
+    display: block !important;
+  }
+  .print-container {
+    display: block !important;
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    overflow: hidden;
+  }
+  #resume-preview {
+    margin: 0;
+    box-shadow: none;
+    border-radius: 0;
+    width: 100%;
+    height: 100%;
+    transform: scale(1);
+  }
+  .print\:hidden {
+      display: none;
+  }
+}
