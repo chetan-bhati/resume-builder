@@ -30,7 +30,6 @@ export default function ExperienceForm() {
   
   useEffect(() => {
     if (isInitialized) {
-      form.reset({ experience: resumeData.experience });
       setOpenItems(resumeData.experience.map(e => e.id));
     }
   }, [isInitialized]);
@@ -39,7 +38,7 @@ export default function ExperienceForm() {
     form.trigger();
     const formData = form.getValues();
     setResumeData(draft => {
-        draft.experience = formData.experience as Experience[];
+        draft.experience = JSON.parse(JSON.stringify(formData.experience));
     });
   };
   
@@ -52,6 +51,7 @@ export default function ExperienceForm() {
   const handleRemove = (index: number, id: string) => {
     remove(index);
     setOpenItems(prev => prev.filter(item => item !== id));
+    handleBlur();
   }
 
   return (

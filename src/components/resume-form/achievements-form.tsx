@@ -29,8 +29,7 @@ export default function AchievementsForm() {
   
   useEffect(() => {
     if (isInitialized) {
-      form.reset({ achievements: resumeData.achievements });
-       setOpenItems(resumeData.achievements.map(a => a.id));
+      setOpenItems(resumeData.achievements.map(a => a.id));
     }
   }, [isInitialized]);
 
@@ -38,7 +37,7 @@ export default function AchievementsForm() {
     form.trigger();
     const formData = form.getValues();
     setResumeData(draft => {
-        draft.achievements = formData.achievements as Achievement[];
+        draft.achievements = JSON.parse(JSON.stringify(formData.achievements));
     });
   };
   
@@ -51,6 +50,7 @@ export default function AchievementsForm() {
   const handleRemove = (index: number, id: string) => {
     remove(index);
     setOpenItems(prev => prev.filter(item => item !== id));
+    handleBlur();
   }
 
   return (

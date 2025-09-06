@@ -30,7 +30,6 @@ export default function EducationForm() {
   
   useEffect(() => {
     if (isInitialized) {
-      form.reset({ education: resumeData.education });
       setOpenItems(resumeData.education.map(e => e.id));
     }
   }, [isInitialized]);
@@ -39,7 +38,7 @@ export default function EducationForm() {
     form.trigger();
     const formData = form.getValues();
     setResumeData(draft => {
-        draft.education = formData.education as Education[];
+        draft.education = JSON.parse(JSON.stringify(formData.education));
     });
   };
   
@@ -52,6 +51,7 @@ export default function EducationForm() {
   const handleRemove = (index: number, id: string) => {
     remove(index);
     setOpenItems(prev => prev.filter(item => item !== id));
+    handleBlur();
   }
 
   return (

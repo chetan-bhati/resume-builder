@@ -30,7 +30,6 @@ export default function ProjectsForm() {
 
   useEffect(() => {
     if (isInitialized) {
-      form.reset({ projects: resumeData.projects });
       setOpenItems(resumeData.projects.map(p => p.id));
     }
   }, [isInitialized]);
@@ -39,7 +38,7 @@ export default function ProjectsForm() {
     form.trigger();
     const formData = form.getValues();
     setResumeData(draft => {
-        draft.projects = formData.projects as Project[];
+        draft.projects = JSON.parse(JSON.stringify(formData.projects));
     });
   };
   
@@ -52,6 +51,7 @@ export default function ProjectsForm() {
   const handleRemove = (index: number, id: string) => {
     remove(index);
     setOpenItems(prev => prev.filter(item => item !== id));
+    handleBlur();
   }
 
   return (
