@@ -9,12 +9,13 @@ import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from '
 import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
 import { Plus, Trash2 } from 'lucide-react';
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from '../ui/accordion';
 import { Textarea } from '../ui/textarea';
 
 export default function EducationForm() {
   const { resumeData, setResumeData, isInitialized } = useResumeStore();
+  const [openItems, setOpenItems] = useState<string[]>([]);
 
   const form = useForm<{ education: Education[] }>({
     resolver: zodResolver(resumeDataSchema.pick({ education: true })),
@@ -30,6 +31,7 @@ export default function EducationForm() {
   useEffect(() => {
     if (isInitialized) {
       form.reset({ education: resumeData.education });
+      setOpenItems(resumeData.education.map(e => e.id));
     }
   }, [isInitialized, resumeData.education, form]);
 
@@ -40,6 +42,17 @@ export default function EducationForm() {
         draft.education = formData.education as Education[];
     });
   };
+  
+  const handleAddNew = () => {
+    const newId = crypto.randomUUID();
+    append({ id: newId, institution: '', degree: '' });
+    setOpenItems(prev => [...prev, newId]);
+  }
+
+  const handleRemove = (index: number, id: string) => {
+    remove(index);
+    setOpenItems(prev => prev.filter(item => item !== id));
+  }
 
   return (
     <Card>
@@ -50,14 +63,14 @@ export default function EducationForm() {
       <CardContent>
         <Form {...form}>
           <div className="space-y-4" onBlur={handleBlur}>
-            <Accordion type="multiple" defaultValue={fields.map(f => f.id)} className="w-full">
+            <Accordion type="multiple" value={openItems} onValueChange={setOpenItems} className="w-full">
               {fields.map((field, index) => (
                 <AccordionItem key={field.id} value={field.id} className="border-b-0">
                   <div className="flex justify-between items-center bg-muted p-2 rounded-t-md border">
                     <AccordionTrigger className="flex-1 text-sm font-medium py-2 text-left">
                         {form.watch(`education.${index}.degree`) || 'New Degree'} at {form.watch(`education.${index}.institution`) || 'New Institution'}
                     </AccordionTrigger>
-                    <Button variant="ghost" size="icon" onClick={() => remove(index)}><Trash2 className="h-4 w-4 text-destructive" /></Button>
+                    <Button variant="ghost" size="icon" onClick={() => handleRemove(index, field.id)}><Trash2 className="h-4 w-4 text-destructive" /></Button>
                   </div>
                   <AccordionContent className="p-4 border border-t-0 rounded-b-md">
                     <div className="space-y-4">
@@ -73,7 +86,7 @@ export default function EducationForm() {
                 </AccordionItem>
               ))}
             </Accordion>
-            <Button variant="outline" onClick={() => append({ id: crypto.randomUUID(), institution: '', degree: '' })}><Plus className="mr-2 h-4 w-4" /> Add Education</Button>
+            <Button variant="outline" onClick={handleAddNew}><Plus className="mr-2 h-4 w-4" /> Add Education</Button>
           </div>
         </Form>
       </CardContent>

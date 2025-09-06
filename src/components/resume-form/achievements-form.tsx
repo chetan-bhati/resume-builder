@@ -8,12 +8,13 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/com
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from '@/components/ui/form';
 import { Button } from '@/components/ui/button';
 import { Plus, Trash2 } from 'lucide-react';
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from '../ui/accordion';
 import { Textarea } from '../ui/textarea';
 
 export default function AchievementsForm() {
   const { resumeData, setResumeData, isInitialized } = useResumeStore();
+  const [openItems, setOpenItems] = useState<string[]>([]);
 
   const form = useForm<{ achievements: Achievement[] }>({
     resolver: zodResolver(resumeDataSchema.pick({ achievements: true })),
@@ -29,6 +30,7 @@ export default function AchievementsForm() {
   useEffect(() => {
     if (isInitialized) {
       form.reset({ achievements: resumeData.achievements });
+       setOpenItems(resumeData.achievements.map(a => a.id));
     }
   }, [isInitialized, resumeData.achievements, form]);
 
@@ -39,6 +41,17 @@ export default function AchievementsForm() {
         draft.achievements = formData.achievements as Achievement[];
     });
   };
+  
+  const handleAddNew = () => {
+    const newId = crypto.randomUUID();
+    append({ id: newId, description: '' });
+    setOpenItems(prev => [...prev, newId]);
+  }
+
+  const handleRemove = (index: number, id: string) => {
+    remove(index);
+    setOpenItems(prev => prev.filter(item => item !== id));
+  }
 
   return (
     <Card>
@@ -49,14 +62,14 @@ export default function AchievementsForm() {
       <CardContent>
         <Form {...form}>
           <div className="space-y-4" onBlur={handleBlur}>
-            <Accordion type="multiple" defaultValue={fields.map(f => f.id)} className="w-full">
+            <Accordion type="multiple" value={openItems} onValueChange={setOpenItems} className="w-full">
               {fields.map((field, index) => (
                 <AccordionItem key={field.id} value={field.id} className="border-b-0">
                   <div className="flex justify-between items-center bg-muted p-2 rounded-t-md border">
                     <AccordionTrigger className="flex-1 text-sm font-medium py-2 text-left">
                         {form.watch(`achievements.${index}.description`)?.substring(0, 50) || 'New Achievement'}...
                     </AccordionTrigger>
-                    <Button variant="ghost" size="icon" onClick={() => remove(index)}><Trash2 className="h-4 w-4 text-destructive" /></Button>
+                    <Button variant="ghost" size="icon" onClick={() => handleRemove(index, field.id)}><Trash2 className="h-4 w-4 text-destructive" /></Button>
                   </div>
                   <AccordionContent className="p-4 border border-t-0 rounded-b-md">
                     <div className="space-y-4">
@@ -83,7 +96,7 @@ export default function AchievementsForm() {
                 </AccordionItem>
               ))}
             </Accordion>
-            <Button variant="outline" onClick={() => append({ id: crypto.randomUUID(), description: '' })}><Plus className="mr-2 h-4 w-4" /> Add Achievement</Button>
+            <Button variant="outline" onClick={handleAddNew}><Plus className="mr-2 h-4 w-4" /> Add Achievement</Button>
           </div>
         </Form>
       </CardContent>
