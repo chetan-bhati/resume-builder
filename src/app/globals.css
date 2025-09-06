@@ -90,12 +90,9 @@ body {
 @media print {
   body, html {
     background: #fff !important;
+    color: #000 !important;
     -webkit-print-color-adjust: exact !important;
     color-adjust: exact !important;
-    margin: 0 !important;
-    padding: 0 !important;
-    width: 100%;
-    height: auto;
   }
 
   .no-print {
@@ -104,26 +101,28 @@ body {
   
   #resume-preview-wrapper {
     display: block !important;
-    position: static !important;
-    padding: 0 !important;
-    margin: 0 !important;
+    position: absolute !important;
+    top: 0;
+    left: 0;
     width: 100% !important;
     height: auto !important;
-    background-color: #fff !important;
     overflow: visible !important;
+    background-color: #fff !important;
   }
 
   #resume-preview {
     margin: 0 !important;
+    padding: 0 !important;
     box-shadow: none !important;
     border-radius: 0 !important;
     width: 100% !important;
     max-width: 100% !important;
     min-height: 0 !important;
     height: auto !important;
-    transform: scale(1);
+    transform: scale(1) !important;
     page-break-before: auto;
     page-break-after: auto;
+    page-break-inside: avoid;
   }
   
   #resume-preview section {
