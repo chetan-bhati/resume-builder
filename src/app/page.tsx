@@ -15,10 +15,10 @@ export default function Home() {
       <div className="flex flex-col h-screen bg-background text-foreground">
         <Header previewRef={previewRef} />
         <main className="flex-1 grid grid-cols-1 md:grid-cols-10 overflow-hidden">
-          <ScrollArea className="md:col-span-4 border-r">
+          <ScrollArea className="md:col-span-4 border-r no-print">
             <ResumeForm />
           </ScrollArea>
-          <ScrollArea className="hidden md:block md:col-span-6 bg-muted">
+          <ScrollArea className="hidden md:block md:col-span-6 bg-muted" id="resume-preview-wrapper">
              <div className="p-4 sm:p-8">
                <ResumePreview ref={previewRef} />
              </div>

@@ -12,14 +12,11 @@ interface HeaderProps {
 
 export default function Header({ previewRef }: HeaderProps) {
     const handlePrint = () => {
-        const printContent = previewRef.current;
-        if (printContent) {
-           window.print();
-        }
+        window.print();
     };
 
     return (
-        <header className="flex items-center justify-between p-4 border-b bg-card flex-shrink-0 z-10 print:hidden">
+        <header className="flex items-center justify-between p-4 border-b bg-card flex-shrink-0 z-10 no-print">
             <h1 className="text-xl font-bold text-primary">ResumeForge</h1>
             <div className="flex items-center gap-2">
                 <AiOptimizerDialog />
