@@ -1,6 +1,6 @@
 "use client";
 
-import { useResumeStore } from '@/hooks/use-resume-store';
+import { useResumeStore } from '@/hooks/use-resume-store.tsx';
 import { Mail, Phone, Globe, MapPin, ExternalLink, Briefcase, GraduationCap, Star, Lightbulb } from 'lucide-react';
 import { Skeleton } from './ui/skeleton';
 

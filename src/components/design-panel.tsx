@@ -8,7 +8,7 @@ import { Button } from "@/components/ui/button"
 import { Label } from "@/components/ui/label"
 import { Slider } from "@/components/ui/slider"
 import { Paintbrush } from "lucide-react"
-import { useResumeStore } from "@/hooks/use-resume-store"
+import { useResumeStore } from "@/hooks/use-resume-store.tsx"
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "./ui/tooltip"
 
 const colors = ["#3F51B5", "#F44336", "#4CAF50", "#2196F3", "#FF9800", "#9C27B0"];
