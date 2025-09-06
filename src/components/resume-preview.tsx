@@ -1,3 +1,4 @@
+
 "use client";
 
 import React from 'react';
@@ -66,7 +67,7 @@ const ResumePreview = React.forwardRef<HTMLDivElement>((props, ref) => {
     <div ref={ref} id="resume-preview" className="bg-white text-gray-800 shadow-lg rounded-lg w-full max-w-[210mm] min-h-[297mm] mx-auto p-12 transition-all duration-300 print:shadow-none">
        <div style={styles}>
         {/* Header */}
-        <header className="text-center mb-8">
+        <header className="text-center mb-4">
             <h1 className="text-4xl font-bold tracking-widest">{personalDetails.name}</h1>
             {personalDetails.role && <p className="text-xl mt-1 font-medium" style={{color: 'var(--preview-primary-color)'}}>{personalDetails.role}</p>}
             <div className="flex justify-center items-center gap-x-4 gap-y-1 mt-4 text-sm flex-wrap">
