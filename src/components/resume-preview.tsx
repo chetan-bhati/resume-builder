@@ -1,5 +1,6 @@
 "use client";
 
+import React from 'react';
 import { useResumeStore } from '@/hooks/use-resume-store.tsx';
 import { Mail, Phone, Globe, MapPin, ExternalLink, Briefcase, GraduationCap, Star, Lightbulb } from 'lucide-react';
 import { Skeleton } from './ui/skeleton';
@@ -20,7 +21,7 @@ const DescriptionRenderer = ({ content }: { content?: string }) => {
         <div className="text-sm text-gray-700 space-y-1">
             {content.split('\n').map((line, index) => (
                 <div key={index}>
-                    {line.startsWith('•') ? <span className="mr-2 text-primary font-bold">•</span> : null}
+                    {line.startsWith('•') ? <span className="mr-2 font-bold" style={{color: 'var(--preview-primary-color)'}}>•</span> : null}
                     {line.replace(/^•\s*/, '')}
                 </div>
             ))}
@@ -28,8 +29,7 @@ const DescriptionRenderer = ({ content }: { content?: string }) => {
     );
 };
 
-
-export default function ResumePreview() {
+const ResumePreview = React.forwardRef<HTMLDivElement>((props, ref) => {
   const { resumeData, design, isInitialized } = useResumeStore();
   const { personalDetails, experience, education, skills, projects } = resumeData;
 
@@ -59,7 +59,7 @@ export default function ResumePreview() {
   }
 
   return (
-    <div id="resume-preview" className="bg-white text-gray-800 shadow-lg rounded-lg w-full max-w-[210mm] min-h-[297mm] mx-auto p-12 transition-all duration-300 print:shadow-none" style={styles}>
+    <div ref={ref} id="resume-preview" className="bg-white text-gray-800 shadow-lg rounded-lg w-full max-w-[210mm] min-h-[297mm] mx-auto p-12 transition-all duration-300 print:shadow-none" style={styles}>
         {/* Header */}
         <header className="text-center mb-8 border-b-2 pb-4" style={{ borderColor: design.primaryColor }}>
             <h1 className="text-4xl font-bold" style={{ color: design.primaryColor }}>{personalDetails.name}</h1>
@@ -137,4 +137,7 @@ export default function ResumePreview() {
         )}
     </div>
   );
-}
+});
+ResumePreview.displayName = 'ResumePreview';
+
+export default ResumePreview;
