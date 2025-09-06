@@ -148,11 +148,12 @@ const ResumePreview = React.forwardRef<HTMLDivElement>((props, ref) => {
         {/* Achievements */}
         {achievements && achievements.length > 0 && (
             <Section title="Achievements" icon={<Trophy className="w-5 h-5" />}>
-                <ul className="list-disc pl-5 space-y-1 text-sm text-gray-700">
-                    {achievements.map(ach => (
-                        <li key={ach.id}>{ach.description.replace(/^•\s*/, '')}</li>
-                    ))}
-                </ul>
+                 {achievements.map(ach => (
+                    <div key={ach.id} className="mb-3 last:mb-0">
+                        <h3 className="font-bold text-base">{ach.title}</h3>
+                        <DescriptionRenderer content={ach.description} />
+                    </div>
+                ))}
             </Section>
         )}
       </div>

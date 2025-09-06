@@ -1,3 +1,4 @@
+
 "use client";
 
 import { useForm, useFieldArray } from 'react-hook-form';
@@ -11,6 +12,7 @@ import { Plus, Trash2 } from 'lucide-react';
 import { useEffect, useState } from 'react';
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from '../ui/accordion';
 import { Textarea } from '../ui/textarea';
+import { Input } from '../ui/input';
 
 export default function AchievementsForm() {
   const { resumeData, setResumeData, isInitialized } = useResumeStore();
@@ -30,25 +32,26 @@ export default function AchievementsForm() {
   useEffect(() => {
     if (isInitialized && resumeData.achievements) {
       form.reset({ achievements: resumeData.achievements });
-      if (openItems.length !== resumeData.achievements.length) {
-        setOpenItems(resumeData.achievements.map(a => a.id));
+      if (!openItems.length) {
+         setOpenItems(resumeData.achievements.map(a => a.id));
       }
     }
   // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [isInitialized, resumeData.achievements, form]);
+  }, [isInitialized, resumeData.achievements, form.reset]);
 
 
   const updateStore = () => {
     form.trigger();
     const formData = form.getValues();
+    const cleanedData = JSON.parse(JSON.stringify(formData.achievements));
     setResumeData(draft => {
-        draft.achievements = JSON.parse(JSON.stringify(formData.achievements));
+        draft.achievements = cleanedData;
     });
   };
   
   const handleAddNew = () => {
     const newId = crypto.randomUUID();
-    append({ id: newId, description: '' });
+    append({ id: newId, title: '', description: '' });
     setOpenItems(prev => [...prev, newId]);
   }
 
@@ -72,12 +75,33 @@ export default function AchievementsForm() {
                 <AccordionItem key={field.id} value={field.id} className="border-b-0">
                   <div className="flex justify-between items-center bg-muted p-2 rounded-t-md border">
                     <AccordionTrigger className="flex-1 text-sm font-medium py-2 text-left">
-                        {form.watch(`achievements.${index}.description`)?.substring(0, 50) || 'New Achievement'}...
+                        {form.watch(`achievements.${index}.title`) || 'New Achievement'}
                     </AccordionTrigger>
                     <Button variant="ghost" size="icon" onClick={() => handleRemove(index, field.id)}><Trash2 className="h-4 w-4 text-destructive" /></Button>
                   </div>
                   <AccordionContent className="p-4 border border-t-0 rounded-b-md">
                     <div className="space-y-4">
+                       <FormField
+                        control={form.control}
+                        name={`achievements.${index}.title`}
+                        render={({ field }) => (
+                          <FormItem>
+                            <FormLabel>Title</FormLabel>
+                            <FormControl>
+                              <Input
+                                placeholder="e.g., Employee of the Month"
+                                {...field}
+                                onBlur={() => {
+                                    field.onBlur();
+                                    updateStore();
+                                }}
+                                value={field.value ?? ''}
+                              />
+                            </FormControl>
+                            <FormMessage />
+                          </FormItem>
+                        )}
+                      />
                        <FormField
                         control={form.control}
                         name={`achievements.${index}.description`}

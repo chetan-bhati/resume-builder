@@ -1,3 +1,4 @@
+
 import { z } from 'zod';
 
 export const personalDetailsSchema = z.object({
@@ -49,6 +50,7 @@ export type Project = z.infer<typeof projectSchema>;
 
 export const achievementSchema = z.object({
     id: z.string().default(() => crypto.randomUUID()),
+    title: z.string().min(1, 'Title is required'),
     description: z.string().min(1, 'Achievement is required'),
 });
 export type Achievement = z.infer<typeof achievementSchema>;
@@ -134,11 +136,13 @@ export const defaultResumeData: ResumeData = {
     achievements: [
         {
             id: 'default-achieve-1',
-            description: '• Exceptional Workmanship: High-quality work was consistently delivered ahead of schedule, reflecting dedication and attention to detail.',
+            title: 'Exceptional Workmanship',
+            description: 'High-quality work was consistently delivered ahead of schedule, reflecting dedication and attention to detail.',
         },
         {
             id: 'default-achieve-2',
-            description: '• Team Collaboration: Played a key role in team projects, providing valuable insight and support to colleagues, resulting in successful project completion.',
+            title: 'Team Collaboration',
+            description: 'Played a key role in team projects, providing valuable insight and support to colleagues, resulting in successful project completion.',
         }
     ]
 };
