@@ -136,4 +136,8 @@ body {
   #resume-preview header p {
     font-size: 1.1rem !important;
   }
+  #resume-preview a {
+    color: hsl(var(--primary)) !important;
+    text-decoration: underline !important;
+  }
 }

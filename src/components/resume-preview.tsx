@@ -138,7 +138,7 @@ const ResumePreview = React.forwardRef<HTMLDivElement>((props, ref) => {
                  {projects.map(proj => (
                     <div key={proj.id} className="mb-3 last:mb-0">
                         <h3 className="font-bold text-base inline">{proj.name}</h3>
-                        {proj.url && <a href={proj.url} target="_blank" rel="noopener noreferrer" className="text-primary hover:underline ml-2"><ExternalLink className="inline w-4 h-4" /></a>}
+                        {proj.url && <a href={proj.url} target="_blank" rel="noopener noreferrer" className="text-primary hover:underline ml-2">({proj.url}) <ExternalLink className="inline w-4 h-4" /></a>}
                         <DescriptionRenderer content={proj.description} />
                     </div>
                 ))}
