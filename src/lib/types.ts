@@ -45,6 +45,12 @@ export const projectSchema = z.object({
 });
 export type Project = z.infer<typeof projectSchema>;
 
+export const achievementSchema = z.object({
+    id: z.string().default(() => crypto.randomUUID()),
+    description: z.string().min(1, 'Achievement is required'),
+});
+export type Achievement = z.infer<typeof achievementSchema>;
+
 
 export const resumeDataSchema = z.object({
   personalDetails: personalDetailsSchema,
@@ -52,6 +58,7 @@ export const resumeDataSchema = z.object({
   education: z.array(educationSchema),
   skills: z.array(skillSchema),
   projects: z.array(projectSchema),
+  achievements: z.array(achievementSchema),
 });
 export type ResumeData = z.infer<typeof resumeDataSchema>;
 
@@ -65,45 +72,69 @@ export type DesignState = z.infer<typeof designSchema>;
 
 export const defaultResumeData: ResumeData = {
     personalDetails: {
-        name: 'John Doe',
-        email: 'john.doe@email.com',
-        phone: '123-456-7890',
-        website: 'https://johndoe.dev',
-        location: 'San Francisco, CA',
-        summary: 'A passionate developer with experience in building web applications using modern technologies. Eager to learn and grow in a challenging environment.',
+        name: 'CHETAN BHATI',
+        email: 'bhatichetan147@gmail.com',
+        phone: '+917024822271',
+        website: '',
+        location: 'Indore',
+        summary: "As a dedicated Python Django developer with 3.6 years of experience, I've specialized in building efficient web applications, managing databases, implementing low-level optimizations, and integrating API's to deliver high-quality, sophisticated solutions.",
     },
     experience: [
         {
             id: 'default-exp-1',
-            company: 'Tech Solutions Inc.',
-            role: 'Senior Software Engineer',
-            startDate: '2020',
-            endDate: 'Present',
-            description: '• Led a team of 5 engineers to develop and maintain a large-scale e-commerce platform.\n• Improved application performance by 30% through code optimization and database tuning.\n• Mentored junior developers and conducted code reviews.',
+            company: 'Wangoes Technologies pvt ltd',
+            role: 'Senior Django Developer',
+            startDate: 'May 2022',
+            endDate: 'Current',
+            description: 'I have grown significantly as a developer, becoming proficient in various skills and technologies essential for modern web development. In my role, I am engaged in the complete software development lifecycle, including application development, deployment, and maintenance.',
         },
     ],
     education: [
         {
             id: 'default-edu-1',
-            institution: 'University of Technology',
-            degree: 'B.S. in Computer Science',
-            startDate: '2016',
-            endDate: '2020',
-            description: 'Graduated with a 3.8 GPA. Member of the computer science club and participated in several hackathons.',
+            institution: 'Sage University',
+            degree: 'B.Tech',
+            startDate: '2018',
+            endDate: '2022',
+            description: 'Indore',
         },
     ],
     skills: [
-        { id: 'default-skill-1', name: 'JavaScript' },
-        { id: 'default-skill-2', name: 'React' },
-        { id: 'default-skill-3', name: 'Node.js' },
-        { id: 'default-skill-4', name: 'Python' },
+        { id: 'default-skill-1', name: 'Python' },
+        { id: 'default-skill-2', name: 'Celery/Redis' },
+        { id: 'default-skill-3', name: 'Docker' },
+        { id: 'default-skill-4', name: 'Django/DRF' },
+        { id: 'default-skill-5', name: 'HTML, CSS, Javascript/Jquery' },
+        { id: 'default-skill-6', name: 'Postgresql/Mysql' },
     ],
     projects: [
         {
             id: 'default-proj-1',
-            name: 'Personal Portfolio',
-            description: 'A personal portfolio website to showcase my projects and skills.',
-            url: 'https://johndoe.dev',
+            name: 'Articheck',
+            description: 'Developed backend logic for APIs and designed the database schema to ensure data integrity. Implemented features for managing groups and handled CSV import/export for reliable report generation. Managed organization features, PDF report generation, and implemented credit purchasing for report creation and virtual courier services.',
+            url: 'https://portal.articheck.com',
+        },
+        {
+            id: 'default-proj-2',
+            name: 'Paragon',
+            description: 'Developed a robust platform enabling field engineers to store, access, and manage resources for operating electrical equipment. Implemented feature for job management, device types, and manufacturing tracking.',
+            url: '',
+        },
+        {
+            id: 'default-proj-3',
+            name: 'Yamaha Health and Wellness',
+            description: 'This platform tracks user health data, providing personalized insights into hydration, sleep patterns, and physical activity. It is an innovative platform focused on promoting holistic health and wellness. Technologies: Python RestAPIs, PostgreSQL, Docker, AWS(S3, EC2, RDS, ELB, Secret Manager)',
+            url: 'https://api.yamahahealthandwellness.com/',
+        }
+    ],
+    achievements: [
+        {
+            id: 'default-achieve-1',
+            description: '• Exceptional Workmanship: High-quality work was consistently delivered ahead of schedule, reflecting dedication and attention to detail.',
+        },
+        {
+            id: 'default-achieve-2',
+            description: '• Team Collaboration: Played a key role in team projects, providing valuable insight and support to colleagues, resulting in successful project completion.',
         }
     ]
 };
