@@ -29,9 +29,14 @@ export default function AchievementsForm() {
   
   useEffect(() => {
     if (isInitialized && resumeData.achievements) {
-      setOpenItems(resumeData.achievements.map(a => a.id));
+        // Only set open items if the number of items changes, to avoid collapsing on edit
+        if(openItems.length !== resumeData.achievements.length) {
+            setOpenItems(resumeData.achievements.map(a => a.id));
+        }
     }
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [isInitialized, resumeData.achievements]);
+
 
   const handleBlur = () => {
     form.trigger();
