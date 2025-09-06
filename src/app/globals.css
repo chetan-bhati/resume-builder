@@ -94,8 +94,8 @@ body {
     color-adjust: exact !important;
     margin: 0 !important;
     padding: 0 !important;
-    width: 100%;
-    height: auto;
+    width: 210mm;
+    height: 297mm;
   }
 
   .no-print {
@@ -104,25 +104,33 @@ body {
   
   #resume-preview-wrapper {
     display: block !important;
-    position: static !important;
-    width: 100% !important;
-    height: auto !important;
+    position: absolute !important;
+    top: 0;
+    left: 0;
+    width: 210mm !important;
+    height: 297mm !important;
     background-color: #fff !important;
     padding: 0 !important;
     margin: 0 !important;
-    overflow: visible !important;
+    overflow: hidden !important;
+    display: flex;
+    align-items: center;
+    justify-content: center;
   }
 
   #resume-preview {
-    margin: 0 auto !important;
+    margin: 0 !important;
     box-shadow: none !important;
     border-radius: 0 !important;
-    width: 100% !important;
-    max-width: 100% !important;
-    min-height: 0 !important;
-    height: auto !important;
-    transform: scale(1) !important;
+    width: 210mm !important;
+    max-width: 210mm !important;
+    min-height: 297mm !important;
+    height: 297mm !important;
+    transform: scale(0.95);
+    transform-origin: top center;
     page-break-inside: avoid;
+    display: flex;
+    flex-direction: column;
   }
   
   #resume-preview section {
