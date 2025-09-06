@@ -33,7 +33,7 @@ export default function ProjectsForm() {
       form.reset({ projects: resumeData.projects });
       setOpenItems(resumeData.projects.map(p => p.id));
     }
-  }, [isInitialized, resumeData.projects, form]);
+  }, [isInitialized]);
   
   const handleBlur = () => {
     form.trigger();

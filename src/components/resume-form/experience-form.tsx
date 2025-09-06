@@ -33,7 +33,7 @@ export default function ExperienceForm() {
       form.reset({ experience: resumeData.experience });
       setOpenItems(resumeData.experience.map(e => e.id));
     }
-  }, [isInitialized, resumeData.experience, form]);
+  }, [isInitialized]);
 
   const handleBlur = () => {
     form.trigger();

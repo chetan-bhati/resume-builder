@@ -32,7 +32,7 @@ export default function AchievementsForm() {
       form.reset({ achievements: resumeData.achievements });
        setOpenItems(resumeData.achievements.map(a => a.id));
     }
-  }, [isInitialized, resumeData.achievements, form]);
+  }, [isInitialized]);
 
   const handleBlur = () => {
     form.trigger();

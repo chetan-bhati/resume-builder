@@ -33,7 +33,7 @@ export default function EducationForm() {
       form.reset({ education: resumeData.education });
       setOpenItems(resumeData.education.map(e => e.id));
     }
-  }, [isInitialized, resumeData.education, form]);
+  }, [isInitialized]);
 
   const handleBlur = () => {
     form.trigger();
