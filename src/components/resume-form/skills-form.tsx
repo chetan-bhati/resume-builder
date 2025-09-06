@@ -5,7 +5,7 @@ import { zodResolver } from '@hookform/resolvers/zod';
 import { resumeDataSchema, type Skill } from '@/lib/types';
 import { useResumeStore } from '@/hooks/use-resume-store.tsx';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
-import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from '@/components/ui/form';
+import { Form } from '@/components/ui/form';
 import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
 import { Plus, Trash2 } from 'lucide-react';
@@ -32,24 +32,26 @@ export default function SkillsForm() {
       form.reset({ skills: resumeData.skills });
     }
   }, [isInitialized, resumeData.skills, form]);
-  
-  useEffect(() => {
-    const subscription = form.watch((value) => {
-      if (value.skills) {
-        setResumeData(draft => {
-            draft.skills = value.skills as Skill[];
-        });
-      }
+
+  const updateStore = () => {
+    const formData = form.getValues();
+    setResumeData(draft => {
+        draft.skills = formData.skills as Skill[];
     });
-    return () => subscription.unsubscribe();
-  }, [form, setResumeData]);
+  }
 
   const handleAddSkill = () => {
       if (newSkill) {
         append({ id: crypto.randomUUID(), name: newSkill });
         setNewSkill("");
+        setTimeout(updateStore, 0);
       }
   };
+
+  const handleRemoveSkill = (index: number) => {
+    remove(index);
+    setTimeout(updateStore, 0);
+  }
 
   const handleKeyDown = (event: React.KeyboardEvent<HTMLInputElement>) => {
     if (event.key === 'Enter') {
@@ -71,7 +73,7 @@ export default function SkillsForm() {
                     {fields.map((field, index) => (
                         <Badge key={field.id} variant="secondary" className="flex items-center gap-1 text-base">
                             {form.watch(`skills.${index}.name`)}
-                            <button onClick={() => remove(index)} className="rounded-full hover:bg-destructive/20 p-0.5">
+                            <button onClick={() => handleRemoveSkill(index)} className="rounded-full hover:bg-destructive/20 p-0.5">
                                 <Trash2 className="h-3 w-3 text-destructive" />
                             </button>
                         </Badge>
@@ -83,7 +85,6 @@ export default function SkillsForm() {
                     value={newSkill}
                     onChange={e => setNewSkill(e.target.value)}
                     onKeyDown={handleKeyDown}
-                    onBlur={() => form.handleSubmit(() => {})()}
                   />
                   <Button type="button" onClick={handleAddSkill}><Plus className="mr-2 h-4 w-4" /> Add Skill</Button>
                 </div>

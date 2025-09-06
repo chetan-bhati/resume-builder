@@ -14,6 +14,20 @@ const Section = ({ icon, title, children }: { icon: React.ReactNode, title: stri
     </section>
 );
 
+const DescriptionRenderer = ({ content }: { content?: string }) => {
+    if (!content) return null;
+    return (
+        <div className="text-sm text-gray-700 space-y-1">
+            {content.split('\n').map((line, index) => (
+                <div key={index}>
+                    {line.startsWith('•') ? <span className="mr-2 text-primary font-bold">•</span> : null}
+                    {line.replace(/^•\s*/, '')}
+                </div>
+            ))}
+        </div>
+    );
+};
+
 
 export default function ResumePreview() {
   const { resumeData, design, isInitialized } = useResumeStore();
@@ -74,7 +88,7 @@ export default function ResumePreview() {
                             <div className="text-xs font-medium text-gray-600">{exp.startDate} - {exp.endDate}</div>
                         </div>
                         <h4 className="text-sm font-medium italic mb-1">{exp.company}</h4>
-                        <div className="text-sm whitespace-pre-wrap text-gray-700 list-disc" dangerouslySetInnerHTML={{ __html: exp.description?.split('\n').map(line => `<div>${line.replace(/•/g, '<span class="mr-2 text-primary font-bold">•</span>')}</div>`).join('') || '' }} />
+                        <DescriptionRenderer content={exp.description} />
                     </div>
                 ))}
             </Section>

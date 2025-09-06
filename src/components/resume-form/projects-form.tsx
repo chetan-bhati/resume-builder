@@ -33,16 +33,13 @@ export default function ProjectsForm() {
     }
   }, [isInitialized, resumeData.projects, form]);
   
-  useEffect(() => {
-    const subscription = form.watch((value) => {
-      if (value.projects) {
-        setResumeData(draft => {
-            draft.projects = value.projects as Project[];
-        });
-      }
+  const handleBlur = () => {
+    form.trigger();
+    const formData = form.getValues();
+    setResumeData(draft => {
+        draft.projects = formData.projects as Project[];
     });
-    return () => subscription.unsubscribe();
-  }, [form, setResumeData]);
+  };
 
   return (
     <Card>
@@ -52,7 +49,7 @@ export default function ProjectsForm() {
       </CardHeader>
       <CardContent>
         <Form {...form}>
-          <div className="space-y-4">
+          <div className="space-y-4" onBlur={handleBlur}>
             <Accordion type="multiple" defaultValue={fields.map(f => f.id)} className="w-full">
               {fields.map((field, index) => (
                 <AccordionItem key={field.id} value={field.id} className="border-b-0">
@@ -64,9 +61,9 @@ export default function ProjectsForm() {
                   </div>
                   <AccordionContent className="p-4 border border-t-0 rounded-b-md">
                     <div className="space-y-4">
-                      <FormField control={form.control} name={`projects.${index}.name`} render={({ field }) => ( <FormItem><FormLabel>Project Name</FormLabel><FormControl><Input {...field} onBlur={field.onBlur} /></FormControl><FormMessage /></FormItem> )} />
-                      <FormField control={form.control} name={`projects.${index}.url`} render={({ field }) => ( <FormItem><FormLabel>Project URL</FormLabel><FormControl><Input {...field} value={field.value ?? ''} onBlur={field.onBlur} /></FormControl><FormMessage /></FormItem> )} />
-                      <FormField control={form.control} name={`projects.${index}.description`} render={({ field }) => ( <FormItem><FormLabel>Description</FormLabel><FormControl><Textarea placeholder="Describe the project..." {...field} rows={3} value={field.value ?? ''} onBlur={field.onBlur} /></FormControl><FormMessage /></FormItem> )} />
+                      <FormField control={form.control} name={`projects.${index}.name`} render={({ field }) => ( <FormItem><FormLabel>Project Name</FormLabel><FormControl><Input {...field} /></FormControl><FormMessage /></FormItem> )} />
+                      <FormField control={form.control} name={`projects.${index}.url`} render={({ field }) => ( <FormItem><FormLabel>Project URL</FormLabel><FormControl><Input {...field} value={field.value ?? ''} /></FormControl><FormMessage /></FormItem> )} />
+                      <FormField control={form.control} name={`projects.${index}.description`} render={({ field }) => ( <FormItem><FormLabel>Description</FormLabel><FormControl><Textarea placeholder="Describe the project..." {...field} rows={3} value={field.value ?? ''} /></FormControl><FormMessage /></FormItem> )} />
                     </div>
                   </AccordionContent>
                 </AccordionItem>
