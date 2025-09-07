@@ -8,12 +8,17 @@ import { defaultResumeData } from '@/lib/types';
 // For now, we'll use a hardcoded user ID. In a real app, you'd get this from auth.
 const USER_ID = 'default-user'; 
 
+// Helper function to remove undefined values from an object
+function removeUndefined(obj: any) {
+    return JSON.parse(JSON.stringify(obj));
+}
+
 export async function getResumeData(): Promise<ResumeData> {
     try {
         const docRef = doc(db, 'resumes', USER_ID);
         const docSnap = await getDoc(docRef);
 
-        if (docSnap.exists()) {
+        if (docSnap.exists() && docSnap.data().resume) {
             // Here you might want to add validation with Zod to be safe
             return docSnap.data().resume as ResumeData;
         } else {
@@ -29,8 +34,8 @@ export async function getResumeData(): Promise<ResumeData> {
 export async function saveResumeData(resumeData: ResumeData) {
     try {
         const docRef = doc(db, 'resumes', USER_ID);
-        console.log('-------', resumeData, docRef);
-        await setDoc(docRef, { resume: resumeData }, { merge: true });
+        const cleanedData = removeUndefined(resumeData);
+        await setDoc(docRef, { resume: cleanedData }, { merge: true });
     } catch (error) {
         console.error("Error saving resume data: ", error);
         throw new Error("Could not save resume data.");
@@ -62,7 +67,8 @@ export async function getDesignState(): Promise<DesignState> {
 export async function saveDesignState(designState: DesignState) {
     try {
         const docRef = doc(db, 'resumes', USER_ID);
-        await setDoc(docRef, { design: designState }, { merge: true });
+        const cleanedData = removeUndefined(designState);
+        await setDoc(docRef, { design: cleanedData }, { merge: true });
     } catch (error) {
         console.error("Error saving design state: ", error);
         throw new Error("Could not save design state.");

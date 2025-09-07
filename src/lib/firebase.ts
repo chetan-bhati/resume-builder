@@ -4,12 +4,12 @@ import {initializeApp, getApp, getApps} from 'firebase/app';
 import {getFirestore} from 'firebase/firestore';
 
 const firebaseConfig = {
-  "apiKey": "your-api-key",
-  "authDomain": "your-auth-domain",
+  "apiKey": "AIzaSyDoFdMwOUQFt-_Y3e4324TXXm-N47yKtzY",
+  "authDomain": "AIzaSyDoFdMwOUQFt-_Y3e4324TXXm-N47yKtzY",
   "projectId": "resumeforge-vzsvr",
-  "storageBucket": "your-storage-bucket",
-  "messagingSenderId": "your-messaging-sender-id",
-  "appId": "your-app-id"
+  "storageBucket": "resumeforge-vzsvr.firebasestorage.app",
+  "messagingSenderId": "775778251373",
+  "appId": "1:775778251373:web:562284976d095e625b4564"
 };
 
 const app = !getApps().length ? initializeApp(firebaseConfig) : getApp();
