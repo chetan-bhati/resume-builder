@@ -46,7 +46,7 @@ export function ResumeProvider({ children }: { children: ReactNode }) {
   // Effect to load data when user logs in or on initial load
   useEffect(() => {
     async function loadData() {
-      if (user && !isInitialized) {
+      if (user) {
         try {
           const [resume, design] = await Promise.all([getResumeData(user.uid), getDesignState(user.uid)]);
           setResumeDataState(resume);
@@ -61,14 +61,16 @@ export function ResumeProvider({ children }: { children: ReactNode }) {
         } finally {
           setIsInitialized(true);
         }
-      } else if (!user && !loading && !isInitialized) {
+      } else if (!user && !loading) {
         // If no user, load default data and mark as initialized
         setResumeDataState(defaultResumeData);
         setDesignState(defaultDesign);
         setIsInitialized(true);
       }
     }
-    loadData();
+    if (!isInitialized) {
+      loadData();
+    }
   }, [user, loading, isInitialized, toast]);
 
   const debouncedSaveResume = useCallback(debounce(async (userId: string | null, data: ResumeData) => {
