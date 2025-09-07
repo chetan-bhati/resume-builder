@@ -8,10 +8,29 @@ import { defaultResumeData } from '@/lib/types';
 // For now, we'll use a hardcoded user ID. In a real app, you'd get this from auth.
 const USER_ID = 'default-user'; 
 
-// Helper function to remove undefined values from an object
-function removeUndefined(obj: any) {
-    return JSON.parse(JSON.stringify(obj));
+// Helper function to recursively remove undefined values from an object
+function removeUndefined(obj: any): any {
+    if (obj === null || obj === undefined) {
+        return obj;
+    }
+
+    if (Array.isArray(obj)) {
+        return obj.map(item => removeUndefined(item));
+    }
+
+    if (typeof obj === 'object') {
+        return Object.keys(obj).reduce((acc, key) => {
+            const value = obj[key];
+            if (value !== undefined) {
+                (acc as any)[key] = removeUndefined(value);
+            }
+            return acc;
+        }, {});
+    }
+
+    return obj;
 }
+
 
 export async function getResumeData(): Promise<ResumeData> {
     try {
