@@ -28,6 +28,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   const { toast } = useToast();
 
   useEffect(() => {
+    // This effect runs once on mount
     const unsubscribe = onAuthStateChanged(auth, (user) => {
       setUser(user);
       setLoading(false);
@@ -36,13 +37,19 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     getRedirectResult(auth)
       .then((result) => {
         if (result) {
+          // This means the user has just signed in via redirect
           toast({
             title: 'Signed in!',
             description: 'You have successfully signed in.',
           });
+          // The onAuthStateChanged listener above will handle setting the user and loading state
+        } else {
+          // This runs on normal page loads, not after a redirect
+          setLoading(false);
         }
       })
       .catch((error) => {
+        // Handle redirect errors
         if (error.code !== 'auth/no-redirect-operation') {
             console.error("Error during redirect result:", error);
             toast({
@@ -51,20 +58,23 @@ export function AuthProvider({ children }: { children: ReactNode }) {
               description: 'Could not complete sign in after redirect. Please try again.',
             });
         }
-      })
-      .finally(() => {
-        setLoading(false);
+        setLoading(false); // Ensure loading is always turned off
       });
 
+    // Cleanup subscription on unmount
     return () => unsubscribe();
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   const signInWithGoogle = async () => {
     const provider = new GoogleAuthProvider();
     try {
+      setLoading(true); // Set loading to true before redirect
       await signInWithRedirect(auth, provider);
+      
     } catch (error) {
-      console.error("Error signing in with Google: ", error);
+       setLoading(false); // Reset loading state on error
+       console.error("Error signing in with Google: ", error);
        toast({
         variant: 'destructive',
         title: 'Sign in failed',

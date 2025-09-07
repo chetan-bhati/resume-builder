@@ -15,6 +15,8 @@ export async function getResumeData(userId: string): Promise<ResumeData> {
         if (docSnap.exists() && docSnap.data().resume) {
             return docSnap.data().resume as ResumeData;
         } else {
+            // User exists but has no resume data, save default
+            await saveResumeData(userId, defaultResumeData);
             return defaultResumeData;
         }
     } catch (error) {
@@ -53,9 +55,12 @@ export async function getDesignState(userId: string): Promise<DesignState> {
         if (docSnap.exists() && docSnap.data().design) {
             return docSnap.data().design as DesignState;
         } else {
+             // User exists but has no design data, save default
+            await saveDesignState(userId, defaultDesign);
             return defaultDesign;
         }
-    } catch (error) {
+    } catch (error)
+ {
         console.error("Error fetching design state: ", error);
         return defaultDesign;
     }
