@@ -40,7 +40,6 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   }, [auth]);
 
   const signInWithGoogle = async () => {
-    setLoading(true);
     const provider = new GoogleAuthProvider();
     try {
       await setPersistence(auth, browserLocalPersistence);
@@ -56,8 +55,6 @@ export function AuthProvider({ children }: { children: ReactNode }) {
         title: 'Sign in failed',
         description: 'Could not sign you in with Google. Please try again.',
       });
-    } finally {
-      setLoading(false);
     }
   };
 
