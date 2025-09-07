@@ -5,5 +5,5 @@ runConfig:
   # Increase this value if you'd like to automatically spin up
   # more instances in response to increased traffic.
   maxInstances: 1
-  # Set the timeout for server-side rendering and API calls to 60 seconds.
-  maxDuration: 60
+  # Set the timeout for server-side rendering and API calls to 180 seconds.
+  maxDuration: 180
