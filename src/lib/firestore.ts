@@ -1,23 +1,20 @@
 
 'use server';
-import { doc, getDoc, setDoc } from 'firebase/firestore';
+import { doc, getDoc, setDoc, updateDoc } from 'firebase/firestore';
 import { db } from '@/lib/firebase';
 import type { ResumeData, DesignState } from '@/lib/types';
 import { defaultResumeData } from '@/lib/types';
 
-// For now, we'll use a hardcoded user ID. In a real app, you'd get this from auth.
-const USER_ID = 'default-user'; 
+export async function getResumeData(userId: string): Promise<ResumeData> {
+    if (!userId) return defaultResumeData;
 
-export async function getResumeData(): Promise<ResumeData> {
     try {
-        const docRef = doc(db, 'resumes', USER_ID);
+        const docRef = doc(db, 'resumes', userId);
         const docSnap = await getDoc(docRef);
 
         if (docSnap.exists() && docSnap.data().resume) {
-            // Here you might want to add validation with Zod to be safe
             return docSnap.data().resume as ResumeData;
         } else {
-            console.log("No such document! Returning default data.");
             return defaultResumeData;
         }
     } catch (error) {
@@ -26,29 +23,31 @@ export async function getResumeData(): Promise<ResumeData> {
     }
 }
 
-export async function saveResumeData(resumeData: ResumeData) {
+export async function saveResumeData(userId: string, resumeData: ResumeData) {
+    if (!userId) throw new Error("User is not authenticated.");
+    
     try {
-        const docRef = doc(db, 'resumes', USER_ID);
-        // Using setDoc with merge is a robust way to "upsert" data.
-        // It will create the document if it doesn't exist, or update it if it does.
-        // It also correctly handles nested objects.
+        const docRef = doc(db, 'resumes', userId);
         const cleanedData = JSON.parse(JSON.stringify(resumeData));
         await setDoc(docRef, { resume: cleanedData }, { merge: true });
     } catch (error) {
-        console.error("Error saving resume data: ", error);
-        throw new Error("Could not save resume data.");
+        console.error("Detailed error while saving resume data:", error);
+        const message = error instanceof Error ? error.message : JSON.stringify(error);
+        throw new Error(`Could not save resume data. ${message}`);
     }
 }
 
-export async function getDesignState(): Promise<DesignState> {
+export async function getDesignState(userId: string): Promise<DesignState> {
     const defaultDesign: DesignState = {
         template: 'modern',
         primaryColor: '#3F51B5',
         fontSize: '10',
         fontFamily: 'Inter',
     };
+    if (!userId) return defaultDesign;
+
     try {
-        const docRef = doc(db, 'resumes', USER_ID);
+        const docRef = doc(db, 'resumes', userId);
         const docSnap = await getDoc(docRef);
 
         if (docSnap.exists() && docSnap.data().design) {
@@ -62,9 +61,11 @@ export async function getDesignState(): Promise<DesignState> {
     }
 }
 
-export async function saveDesignState(designState: DesignState) {
+export async function saveDesignState(userId: string, designState: DesignState) {
+    if (!userId) throw new Error("User is not authenticated.");
+
     try {
-        const docRef = doc(db, 'resumes', USER_ID);
+        const docRef = doc(db, 'resumes', userId);
         const cleanedData = JSON.parse(JSON.stringify(designState));
         await setDoc(docRef, { design: cleanedData }, { merge: true });
     } catch (error) {

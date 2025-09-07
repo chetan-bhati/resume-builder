@@ -1,3 +1,4 @@
+
 "use client";
 
 import { createContext, useContext, useState, useEffect, ReactNode, useCallback } from 'react';
@@ -6,6 +7,7 @@ import { defaultResumeData } from '@/lib/types';
 import { produce } from 'immer';
 import { getResumeData, saveResumeData, getDesignState, saveDesignState } from '@/lib/firestore';
 import { useToast } from './use-toast';
+import { useAuth } from './use-auth';
 
 interface ResumeStore {
   resumeData: ResumeData;
@@ -39,30 +41,40 @@ export function ResumeProvider({ children }: { children: ReactNode }) {
   const [design, setDesignState] = useState<DesignState>(defaultDesign);
   const [isInitialized, setIsInitialized] = useState(false);
   const { toast } = useToast();
-
+  const { user, loading } = useAuth();
+  
+  // Effect to load data when user logs in or on initial load
   useEffect(() => {
     async function loadData() {
-      try {
-        const [resume, design] = await Promise.all([getResumeData(), getDesignState()]);
-        setResumeDataState(resume);
-        setDesignState(design);
-      } catch (error) {
-        console.error("Failed to load data from Firestore", error);
-        toast({
-          variant: 'destructive',
-          title: 'Error loading data',
-          description: 'Could not fetch your data from the database.'
-        })
-      } finally {
+      if (user && !isInitialized) {
+        try {
+          const [resume, design] = await Promise.all([getResumeData(user.uid), getDesignState(user.uid)]);
+          setResumeDataState(resume);
+          setDesignState(design);
+        } catch (error) {
+          console.error("Failed to load data from Firestore", error);
+          toast({
+            variant: 'destructive',
+            title: 'Error loading data',
+            description: 'Could not fetch your data from the database.'
+          })
+        } finally {
+          setIsInitialized(true);
+        }
+      } else if (!user && !loading) {
+        // If no user, load default data and mark as initialized
+        setResumeDataState(defaultResumeData);
+        setDesignState(defaultDesign);
         setIsInitialized(true);
       }
     }
     loadData();
-  }, [toast]);
-  
-  const debouncedSaveResume = useCallback(debounce(async (data: ResumeData) => {
+  }, [user, loading, isInitialized, toast]);
+
+  const debouncedSaveResume = useCallback(debounce(async (userId: string | null, data: ResumeData) => {
+    if (!userId) return;
     try {
-      await saveResumeData(data);
+      await saveResumeData(userId, data);
     } catch (e) {
       console.error("Failed to save resume data", e);
       toast({
@@ -73,9 +85,10 @@ export function ResumeProvider({ children }: { children: ReactNode }) {
     }
   }, 1000), [toast]);
 
-  const debouncedSaveDesign = useCallback(debounce(async (data: DesignState) => {
+  const debouncedSaveDesign = useCallback(debounce(async (userId: string | null, data: DesignState) => {
+    if (!userId) return;
     try {
-      await saveDesignState(data);
+      await saveDesignState(userId, data);
     } catch (e) {
       console.error("Failed to save design data", e);
        toast({
@@ -86,18 +99,17 @@ export function ResumeProvider({ children }: { children: ReactNode }) {
     }
   }, 1000), [toast]);
 
-
   useEffect(() => {
-    if (isInitialized) {
-      debouncedSaveResume(resumeData);
+    if (isInitialized && user) {
+      debouncedSaveResume(user.uid, resumeData);
     }
-  }, [resumeData, isInitialized, debouncedSaveResume]);
+  }, [resumeData, isInitialized, user, debouncedSaveResume]);
   
   useEffect(() => {
-    if (isInitialized) {
-      debouncedSaveDesign(design);
+    if (isInitialized && user) {
+      debouncedSaveDesign(user.uid, design);
     }
-  }, [design, isInitialized, debouncedSaveDesign]);
+  }, [design, isInitialized, user, debouncedSaveDesign]);
 
   const setResumeData = (fn: (draft: ResumeData) => void) => {
     setResumeDataState(produce(fn));
@@ -106,6 +118,15 @@ export function ResumeProvider({ children }: { children: ReactNode }) {
   const setDesign = (fn: (draft: DesignState) => void) => {
     setDesignState(produce(fn));
   };
+
+  // When user signs out, reset the store to default state
+  useEffect(() => {
+    if(!user && isInitialized) {
+        setResumeDataState(defaultResumeData);
+        setDesignState(defaultDesign);
+        setIsInitialized(false); // So data reloads on next login
+    }
+  }, [user, isInitialized]);
 
   return (
     <ResumeContext.Provider value={{ resumeData, setResumeData, design, setDesign, isInitialized }}>
