@@ -3,7 +3,6 @@
 
 import { useState, useEffect, createContext, useContext, ReactNode } from 'react';
 import { 
-  getAuth, 
   onAuthStateChanged, 
   signInWithRedirect, 
   GoogleAuthProvider, 
@@ -11,7 +10,7 @@ import {
   type User,
   getRedirectResult
 } from 'firebase/auth';
-import { app } from '@/lib/firebase';
+import { auth } from '@/lib/firebase-client';
 import { useToast } from './use-toast';
 import { useRouter } from 'next/navigation';
 
@@ -27,7 +26,6 @@ const AuthContext = createContext<AuthContextType | null>(null);
 export function AuthProvider({ children }: { children: ReactNode }) {
   const [user, setUser] = useState<User | null>(null);
   const [loading, setLoading] = useState(true);
-  const auth = getAuth(app);
   const { toast } = useToast();
   const router = useRouter();
 
@@ -49,15 +47,18 @@ export function AuthProvider({ children }: { children: ReactNode }) {
         }
       })
       .catch((error) => {
-        console.error("Error during redirect result:", error);
-        toast({
-          variant: 'destructive',
-          title: 'Sign in failed',
-          description: 'Could not complete sign in after redirect. Please try again.',
-        });
+        if (error.code !== 'auth/no-redirect-operation') {
+            console.error("Error during redirect result:", error);
+            toast({
+                variant: 'destructive',
+                title: 'Sign in failed',
+                description: 'Could not complete sign in after redirect. Please try again.',
+            });
+        }
       })
       .finally(() => {
-        // Ensure loading is false after attempting to get redirect result
+        // Ensure loading is false after attempting to get redirect result,
+        // if onAuthStateChanged hasn't already done so.
         setLoading(false);
       });
 
@@ -67,7 +68,6 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   const signInWithGoogle = async () => {
     const provider = new GoogleAuthProvider();
     try {
-      // No need to set loading to true, the page will redirect anyway
       await signInWithRedirect(auth, provider);
     } catch (error) {
       console.error("Error signing in with Google: ", error);
@@ -86,7 +86,6 @@ export function AuthProvider({ children }: { children: ReactNode }) {
         title: 'Signed out!',
         description: 'You have been successfully signed out.',
       });
-      // No need for router.refresh(), onAuthStateChanged will trigger re-render
     } catch (error) {
       console.error("Error signing out: ", error);
        toast({
@@ -98,7 +97,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   };
 
   const value = { user, loading, signInWithGoogle, signOut: logOut };
-
+  
   return (
     <AuthContext.Provider value={value}>
       {children}
