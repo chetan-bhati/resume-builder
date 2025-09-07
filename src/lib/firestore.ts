@@ -8,30 +8,6 @@ import { defaultResumeData } from '@/lib/types';
 // For now, we'll use a hardcoded user ID. In a real app, you'd get this from auth.
 const USER_ID = 'default-user'; 
 
-// Helper function to recursively remove undefined values from an object
-function removeUndefined(obj: any): any {
-    if (obj === null || obj === undefined) {
-        return obj;
-    }
-
-    if (Array.isArray(obj)) {
-        return obj.map(item => removeUndefined(item));
-    }
-
-    if (typeof obj === 'object') {
-        return Object.keys(obj).reduce((acc, key) => {
-            const value = obj[key];
-            if (value !== undefined) {
-                (acc as any)[key] = removeUndefined(value);
-            }
-            return acc;
-        }, {});
-    }
-
-    return obj;
-}
-
-
 export async function getResumeData(): Promise<ResumeData> {
     try {
         const docRef = doc(db, 'resumes', USER_ID);
@@ -53,7 +29,10 @@ export async function getResumeData(): Promise<ResumeData> {
 export async function saveResumeData(resumeData: ResumeData) {
     try {
         const docRef = doc(db, 'resumes', USER_ID);
-        const cleanedData = removeUndefined(resumeData);
+        // Using setDoc with merge is a robust way to "upsert" data.
+        // It will create the document if it doesn't exist, or update it if it does.
+        // It also correctly handles nested objects.
+        const cleanedData = JSON.parse(JSON.stringify(resumeData));
         await setDoc(docRef, { resume: cleanedData }, { merge: true });
     } catch (error) {
         console.error("Error saving resume data: ", error);
@@ -86,7 +65,7 @@ export async function getDesignState(): Promise<DesignState> {
 export async function saveDesignState(designState: DesignState) {
     try {
         const docRef = doc(db, 'resumes', USER_ID);
-        const cleanedData = removeUndefined(designState);
+        const cleanedData = JSON.parse(JSON.stringify(designState));
         await setDoc(docRef, { design: cleanedData }, { merge: true });
     } catch (error) {
         console.error("Error saving design state: ", error);
