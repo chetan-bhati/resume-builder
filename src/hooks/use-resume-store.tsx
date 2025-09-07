@@ -43,35 +43,35 @@ export function ResumeProvider({ children }: { children: ReactNode }) {
   const { toast } = useToast();
   const { user, loading } = useAuth();
   
-  // Effect to load data when user logs in or on initial load
+  // Effect to load data when user auth state is determined
   useEffect(() => {
+    // Do not run if auth is still loading
+    if (loading) return;
+
     async function loadData() {
-      if (user) {
-        try {
-          const [resume, design] = await Promise.all([getResumeData(user.uid), getDesignState(user.uid)]);
-          setResumeDataState(resume);
-          setDesignState(design);
-        } catch (error) {
-          console.error("Failed to load data from Firestore", error);
-          toast({
-            variant: 'destructive',
-            title: 'Error loading data',
-            description: 'Could not fetch your data from the database.'
-          })
-        } finally {
-          setIsInitialized(true);
+        if (user) { // User is logged in
+            try {
+                const [resume, design] = await Promise.all([getResumeData(user.uid), getDesignState(user.uid)]);
+                setResumeDataState(resume);
+                setDesignState(design);
+            } catch (error) {
+                console.error("Failed to load data from Firestore", error);
+                toast({
+                    variant: 'destructive',
+                    title: 'Error loading data',
+                    description: 'Could not fetch your data from the database.'
+                })
+            }
+        } else { // User is logged out
+            setResumeDataState(defaultResumeData);
+            setDesignState(defaultDesign);
         }
-      } else if (!user && !loading) {
-        // If no user, load default data and mark as initialized
-        setResumeDataState(defaultResumeData);
-        setDesignState(defaultDesign);
         setIsInitialized(true);
-      }
     }
-    if (!isInitialized) {
-      loadData();
-    }
-  }, [user, loading, isInitialized, toast]);
+
+    loadData();
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [user, loading]); // This effect should ONLY run when user or loading state changes.
 
   const debouncedSaveResume = useCallback(debounce(async (userId: string | null, data: ResumeData) => {
     if (!userId) return;
@@ -82,7 +82,7 @@ export function ResumeProvider({ children }: { children: ReactNode }) {
       toast({
         variant: 'destructive',
         title: 'Error saving resume',
-        description: 'Your changes could not be saved to the database.'
+        description: `Your changes could not be saved. ${e instanceof Error ? e.message : ''}`
       })
     }
   }, 1000), [toast]);
@@ -96,7 +96,7 @@ export function ResumeProvider({ children }: { children: ReactNode }) {
        toast({
         variant: 'destructive',
         title: 'Error saving design',
-        description: 'Your design changes could not be saved to the database.'
+        description: `Your design changes could not be saved. ${e instanceof Error ? e.message : ''}`
       })
     }
   }, 1000), [toast]);
@@ -120,15 +120,6 @@ export function ResumeProvider({ children }: { children: ReactNode }) {
   const setDesign = (fn: (draft: DesignState) => void) => {
     setDesignState(produce(fn));
   };
-
-  // When user signs out, reset the store to default state
-  useEffect(() => {
-    if(!user && isInitialized) {
-        setResumeDataState(defaultResumeData);
-        setDesignState(defaultDesign);
-        setIsInitialized(false); // So data reloads on next login
-    }
-  }, [user, isInitialized]);
 
   return (
     <ResumeContext.Provider value={{ resumeData, setResumeData, design, setDesign, isInitialized }}>
