@@ -29,6 +29,7 @@ export async function getResumeData(): Promise<ResumeData> {
 export async function saveResumeData(resumeData: ResumeData) {
     try {
         const docRef = doc(db, 'resumes', USER_ID);
+        console.log('-------', resumeData, docRef);
         await setDoc(docRef, { resume: resumeData }, { merge: true });
     } catch (error) {
         console.error("Error saving resume data: ", error);
