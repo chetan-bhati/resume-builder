@@ -2,10 +2,18 @@
 "use client";
 
 import { useState, useEffect, createContext, useContext, ReactNode } from 'react';
-import { getAuth, onAuthStateChanged, signInWithPopup, GoogleAuthProvider, signOut, type User } from 'firebase/auth';
+import { 
+  getAuth, 
+  onAuthStateChanged, 
+  signInWithPopup, 
+  GoogleAuthProvider, 
+  signOut, 
+  type User,
+  setPersistence,
+  browserLocalPersistence
+} from 'firebase/auth';
 import { app } from '@/lib/firebase';
 import { useToast } from './use-toast';
-import { useRouter } from 'next/navigation';
 
 interface AuthContextType {
   user: User | null;
@@ -21,7 +29,6 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   const [loading, setLoading] = useState(true);
   const auth = getAuth(app);
   const { toast } = useToast();
-  const router = useRouter();
 
   useEffect(() => {
     const unsubscribe = onAuthStateChanged(auth, (user) => {
@@ -36,12 +43,12 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     setLoading(true);
     const provider = new GoogleAuthProvider();
     try {
+      await setPersistence(auth, browserLocalPersistence);
       await signInWithPopup(auth, provider);
       toast({
         title: 'Signed in!',
         description: 'You have successfully signed in.',
       });
-      // router.refresh(); // Removed to prevent interference with auth flow
     } catch (error) {
       console.error("Error signing in with Google: ", error);
        toast({
@@ -61,7 +68,6 @@ export function AuthProvider({ children }: { children: ReactNode }) {
         title: 'Signed out!',
         description: 'You have been successfully signed out.',
       });
-      // router.refresh(); // Removed to prevent interference with auth flow
     } catch (error) {
       console.error("Error signing out: ", error);
        toast({
