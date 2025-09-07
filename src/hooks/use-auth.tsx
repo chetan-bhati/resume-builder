@@ -5,12 +5,10 @@ import { useState, useEffect, createContext, useContext, ReactNode } from 'react
 import { 
   getAuth, 
   onAuthStateChanged, 
-  signInWithPopup, 
+  signInWithRedirect, 
   GoogleAuthProvider, 
   signOut, 
-  type User,
-  setPersistence,
-  browserLocalPersistence
+  type User
 } from 'firebase/auth';
 import { app } from '@/lib/firebase';
 import { useToast } from './use-toast';
@@ -42,12 +40,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   const signInWithGoogle = async () => {
     const provider = new GoogleAuthProvider();
     try {
-      await setPersistence(auth, browserLocalPersistence);
-      await signInWithPopup(auth, provider);
-      toast({
-        title: 'Signed in!',
-        description: 'You have successfully signed in.',
-      });
+      await signInWithRedirect(auth, provider);
     } catch (error) {
       console.error("Error signing in with Google: ", error);
        toast({
