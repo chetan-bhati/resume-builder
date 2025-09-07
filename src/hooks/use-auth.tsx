@@ -41,7 +41,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
         title: 'Signed in!',
         description: 'You have successfully signed in.',
       });
-      router.refresh();
+      // router.refresh(); // Removed to prevent interference with auth flow
     } catch (error) {
       console.error("Error signing in with Google: ", error);
        toast({
@@ -61,7 +61,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
         title: 'Signed out!',
         description: 'You have been successfully signed out.',
       });
-      router.refresh();
+      // router.refresh(); // Removed to prevent interference with auth flow
     } catch (error) {
       console.error("Error signing out: ", error);
        toast({
