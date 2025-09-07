@@ -61,7 +61,7 @@ export function ResumeProvider({ children }: { children: ReactNode }) {
         } finally {
           setIsInitialized(true);
         }
-      } else if (!user && !loading) {
+      } else if (!user && !loading && !isInitialized) {
         // If no user, load default data and mark as initialized
         setResumeDataState(defaultResumeData);
         setDesignState(defaultDesign);
