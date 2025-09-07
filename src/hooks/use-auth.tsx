@@ -10,9 +10,8 @@ import {
   type User,
   getRedirectResult
 } from 'firebase/auth';
-import { auth } from '@/lib/firebase-client';
+import { auth } from '@/lib/firebase-client'; // Correctly import the initialized auth instance
 import { useToast } from './use-toast';
-import { useRouter } from 'next/navigation';
 
 interface AuthContextType {
   user: User | null;
@@ -27,7 +26,6 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   const [user, setUser] = useState<User | null>(null);
   const [loading, setLoading] = useState(true);
   const { toast } = useToast();
-  const router = useRouter();
 
   useEffect(() => {
     const unsubscribe = onAuthStateChanged(auth, (user) => {
@@ -35,7 +33,6 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       setLoading(false);
     });
 
-    // Handle the redirect result
     getRedirectResult(auth)
       .then((result) => {
         if (result) {
@@ -43,27 +40,24 @@ export function AuthProvider({ children }: { children: ReactNode }) {
             title: 'Signed in!',
             description: 'You have successfully signed in.',
           });
-          // The onAuthStateChanged listener will handle the user state update
         }
       })
       .catch((error) => {
         if (error.code !== 'auth/no-redirect-operation') {
             console.error("Error during redirect result:", error);
             toast({
-                variant: 'destructive',
-                title: 'Sign in failed',
-                description: 'Could not complete sign in after redirect. Please try again.',
+              variant: 'destructive',
+              title: 'Sign in failed',
+              description: 'Could not complete sign in after redirect. Please try again.',
             });
         }
       })
       .finally(() => {
-        // Ensure loading is false after attempting to get redirect result,
-        // if onAuthStateChanged hasn't already done so.
         setLoading(false);
       });
 
     return () => unsubscribe();
-  }, [auth, toast]);
+  }, []);
 
   const signInWithGoogle = async () => {
     const provider = new GoogleAuthProvider();
