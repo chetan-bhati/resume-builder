@@ -5,7 +5,7 @@ import {getFirestore} from 'firebase/firestore';
 
 const firebaseConfig = {
   "apiKey": "AIzaSyDoFdMwOUQFt-_Y3e4324TXXm-N47yKtzY",
-  "authDomain": "AIzaSyDoFdMwOUQFt-_Y3e4324TXXm-N47yKtzY",
+  "authDomain": "resumeforge-vzsvr.firebaseapp.com",
   "projectId": "resumeforge-vzsvr",
   "storageBucket": "resumeforge-vzsvr.firebasestorage.app",
   "messagingSenderId": "775778251373",
