@@ -8,10 +8,12 @@ import {
   signInWithRedirect, 
   GoogleAuthProvider, 
   signOut, 
-  type User
+  type User,
+  getRedirectResult
 } from 'firebase/auth';
 import { app } from '@/lib/firebase';
 import { useToast } from './use-toast';
+import { useRouter } from 'next/navigation';
 
 interface AuthContextType {
   user: User | null;
@@ -27,6 +29,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   const [loading, setLoading] = useState(true);
   const auth = getAuth(app);
   const { toast } = useToast();
+  const router = useRouter();
 
   useEffect(() => {
     const unsubscribe = onAuthStateChanged(auth, (user) => {
@@ -34,19 +37,44 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       setLoading(false);
     });
 
+    // Handle the redirect result
+    getRedirectResult(auth)
+      .then((result) => {
+        if (result) {
+          toast({
+            title: 'Signed in!',
+            description: 'You have successfully signed in.',
+          });
+          // The onAuthStateChanged listener will handle the user state update
+        }
+      })
+      .catch((error) => {
+        console.error("Error during redirect result:", error);
+        toast({
+          variant: 'destructive',
+          title: 'Sign in failed',
+          description: 'Could not complete sign in after redirect. Please try again.',
+        });
+      })
+      .finally(() => {
+        // Ensure loading is false after attempting to get redirect result
+        setLoading(false);
+      });
+
     return () => unsubscribe();
-  }, [auth]);
+  }, [auth, toast]);
 
   const signInWithGoogle = async () => {
     const provider = new GoogleAuthProvider();
     try {
+      // No need to set loading to true, the page will redirect anyway
       await signInWithRedirect(auth, provider);
     } catch (error) {
       console.error("Error signing in with Google: ", error);
        toast({
         variant: 'destructive',
         title: 'Sign in failed',
-        description: 'Could not sign you in with Google. Please try again.',
+        description: `Could not sign you in with Google. ${error instanceof Error ? error.message : ''}`,
       });
     }
   };
@@ -58,6 +86,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
         title: 'Signed out!',
         description: 'You have been successfully signed out.',
       });
+      // No need for router.refresh(), onAuthStateChanged will trigger re-render
     } catch (error) {
       console.error("Error signing out: ", error);
        toast({
