@@ -1,7 +1,7 @@
 
 'use server';
 import { doc, getDoc, setDoc, updateDoc } from 'firebase/firestore';
-import { db } from '@/lib/firebase';
+import { db } from '@/lib/firebase-client';
 import type { ResumeData, DesignState } from '@/lib/types';
 import { defaultResumeData } from '@/lib/types';
 
