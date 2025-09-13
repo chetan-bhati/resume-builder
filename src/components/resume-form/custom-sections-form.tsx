@@ -64,9 +64,6 @@ export default function CustomSectionsForm() {
 
   const handleRemove = (index: number, id: string) => {
     remove(index);
-    setOpenItems(prev => prev.filter(item => item !== id));
-    
-    // Remove from sectionOrder
     setResumeData(draft => {
         draft.sectionOrder = draft.sectionOrder.filter(sectionId => sectionId !== id);
         draft.customSections = draft.customSections.filter(section => section.id !== id);
