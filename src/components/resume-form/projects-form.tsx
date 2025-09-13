@@ -1,3 +1,4 @@
+
 "use client";
 
 import { useForm, useFieldArray } from 'react-hook-form';
@@ -75,8 +76,9 @@ export default function ProjectsForm() {
                   <AccordionContent className="p-4 border border-t-0 rounded-b-md">
                     <div className="space-y-4">
                       <FormField control={form.control} name={`projects.${index}.name`} render={({ field }) => ( <FormItem><FormLabel>Project Name</FormLabel><FormControl><Input {...field} /></FormControl><FormMessage /></FormItem> )} />
+                      <FormField control={form.control} name={`projects.${index}.intro`} render={({ field }) => ( <FormItem><FormLabel>Brief Intro</FormLabel><FormControl><Input placeholder="A one-line summary of the project" {...field} value={field.value ?? ''} /></FormControl><FormMessage /></FormItem> )} />
                       <FormField control={form.control} name={`projects.${index}.url`} render={({ field }) => ( <FormItem><FormLabel>Project URL</FormLabel><FormControl><Input {...field} value={field.value ?? ''} /></FormControl><FormMessage /></FormItem> )} />
-                      <FormField control={form.control} name={`projects.${index}.description`} render={({ field }) => ( <FormItem><FormLabel>Description</FormLabel><FormControl><Textarea placeholder="Describe the project..." {...field} rows={3} value={field.value ?? ''} /></FormControl><FormMessage /></FormItem> )} />
+                      <FormField control={form.control} name={`projects.${index}.description`} render={({ field }) => ( <FormItem><FormLabel>Description (use • for bullet points)</FormLabel><FormControl><Textarea placeholder="• Describe the project details..." {...field} rows={4} value={field.value ?? ''} /></FormControl><FormMessage /></FormItem> )} />
                     </div>
                   </AccordionContent>
                 </AccordionItem>

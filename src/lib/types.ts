@@ -50,6 +50,7 @@ export type Skill = z.infer<typeof skillSchema>;
 export const projectSchema = z.object({
     id: z.string().default(() => crypto.randomUUID()),
     name: z.string().min(1, 'Project name is required'),
+    intro: z.string().optional(),
     description: z.string().optional(),
     url: z.string().url('Invalid URL').optional().or(z.literal('')),
 });
@@ -156,19 +157,22 @@ export const defaultResumeData: ResumeData = {
         {
             id: 'default-proj-1',
             name: 'Articheck',
-            description: 'Developed backend logic for APIs and designed the database schema to ensure data integrity. Implemented features for managing groups and handled CSV import/export for reliable report generation. Managed organization features, PDF report generation, and implemented credit purchasing for report creation and virtual courier services.',
+            intro: 'A platform for architectural reporting and document management.',
+            description: '• Developed backend logic for APIs and designed the database schema to ensure data integrity.\n• Implemented features for managing groups and handled CSV import/export for reliable report generation.\n• Managed organization features, PDF report generation, and implemented credit purchasing for report creation and virtual courier services.',
             url: 'https://portal.articheck.com',
         },
         {
             id: 'default-proj-2',
             name: 'Paragon',
-            description: 'Developed a robust platform enabling field engineers to store, access, and manage resources for operating electrical equipment. Implemented feature for job management, device types, and manufacturing tracking.',
+            intro: 'A resource management platform for field engineers.',
+            description: '• Developed a robust platform enabling field engineers to store, access, and manage resources for operating electrical equipment.\n• Implemented feature for job management, device types, and manufacturing tracking.',
             url: '',
         },
         {
             id: 'default-proj-3',
             name: 'Yamaha Health and Wellness',
-            description: 'This platform tracks user health data, providing personalized insights into hydration, sleep patterns, and physical activity. It is an innovative platform focused on promoting holistic health and wellness. Technologies: Python RestAPIs, PostgreSQL, Docker, AWS(S3, EC2, RDS, ELB, Secret Manager)',
+            intro: 'A platform for tracking user health data and providing personalized insights.',
+            description: '• This platform tracks user health data, providing personalized insights into hydration, sleep patterns, and physical activity.\n• It is an innovative platform focused on promoting holistic health and wellness.\n• Technologies: Python RestAPIs, PostgreSQL, Docker, AWS(S3, EC2, RDS, ELB, Secret Manager)',
             url: 'https://api.yamahahealthandwellness.com/',
         }
     ],
