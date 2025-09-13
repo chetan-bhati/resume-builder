@@ -63,6 +63,8 @@ export const achievementSchema = z.object({
 });
 export type Achievement = z.infer<typeof achievementSchema>;
 
+export const sectionIdSchema = z.enum(['experience', 'education', 'skills', 'projects', 'achievements']);
+export type SectionId = z.infer<typeof sectionIdSchema>;
 
 export const resumeDataSchema = z.object({
   personalDetails: personalDetailsSchema,
@@ -71,6 +73,7 @@ export const resumeDataSchema = z.object({
   skills: z.array(skillSchema),
   projects: z.array(projectSchema),
   achievements: z.array(achievementSchema),
+  sectionOrder: z.array(sectionIdSchema),
 });
 export type ResumeData = z.infer<typeof resumeDataSchema>;
 
@@ -84,108 +87,61 @@ export type DesignState = z.infer<typeof designSchema>;
 
 export const defaultResumeData: ResumeData = {
     personalDetails: {
-        name: 'CHETAN BHATI',
-        role: 'Senior Django Developer',
-        email: 'bhatichetan147@gmail.com',
-        phone: '+917024822271',
+        name: '',
+        role: '',
+        email: '',
+        phone: '',
         website: '',
-        location: 'Indore',
-        summary: "As a dedicated Python Django developer with 3.6 years of experience, I've specialized in building efficient web applications, managing databases, implementing low-level optimizations, and integrating API's to deliver high-quality, sophisticated solutions.",
+        location: '',
+        summary: "",
     },
-    experience: [
+    experience: 
+    [
         {
-            id: 'default-exp-1',
-            company: 'Wangoes Technologies pvt ltd',
-            role: 'Senior Django Developer',
-            startDate: 'May 2022',
-            endDate: 'Current',
-            location: 'Indore',
-            description: 'I have grown significantly as a developer, becoming proficient in various skills and technologies essential for modern web development. In my role, I am engaged in the complete software development lifecycle, including application development, deployment, and maintenance.',
+            id: '',
+            company: '',
+            role: '',
+            startDate: '',
+            endDate: '',
+            location: '',
+            description: '',
         },
-    ],
+      ],
+    
     education: [
         {
-            id: 'default-edu-1',
-            institution: 'Sage University',
-            degree: 'B.Tech',
-            startDate: '2018',
-            endDate: '2022',
-            description: 'Indore',
+            id: '',
+            institution: '',
+            degree: '',
+            startDate: '',
+            endDate: '',
+            description: '',
         },
     ],
     skills: [
         {
-          id: 'default-skill-cat-1',
-          category: 'Languages',
+          id: '',
+          category: '',
           skills: [
-            { id: 'default-skill-1', name: 'Python' },
-            { id: 'default-skill-2', name: 'JavaScript (ES6+)' },
-            { id: 'default-skill-3', name: 'HTML5 & CSS3' },
-            { id: 'default-skill-4', name: 'SQL' },
-          ]
-        },
-        {
-          id: 'default-skill-cat-2',
-          category: 'Frameworks & Libraries',
-          skills: [
-            { id: 'default-skill-5', name: 'Django / DRF' },
-            { id: 'default-skill-6', name: 'Celery' },
-            { id: 'default-skill-7', name: 'jQuery' },
-          ]
-        },
-         {
-          id: 'default-skill-cat-3',
-          category: 'Databases & Caching',
-          skills: [
-            { id: 'default-skill-8', name: 'PostgreSQL' },
-            { id: 'default-skill-9', name: 'MySQL' },
-            { id: 'default-skill-10', name: 'Redis' },
-          ]
-        },
-        {
-          id: 'default-skill-cat-4',
-          category: 'DevOps & Cloud',
-          skills: [
-            { id: 'default-skill-11', name: 'Docker' },
-            { id: 'default-skill-12', name: 'AWS (EC2, S3, RDS, ELB)' },
-            { id: 'default-skill-13', name: 'Nginx / Gunicorn' },
-            { id: 'default-skill-14', name: 'Supervisor' },
+            { id: '', name: '' },
           ]
         },
     ],
     projects: [
         {
-            id: 'default-proj-1',
-            name: 'Articheck',
-            intro: 'A platform for architectural reporting and document management.',
-            description: '• Developed backend logic for APIs and designed the database schema to ensure data integrity.\n• Implemented features for managing groups and handled CSV import/export for reliable report generation.\n• Managed organization features, PDF report generation, and implemented credit purchasing for report creation and virtual courier services.',
-            url: 'https://portal.articheck.com',
-        },
-        {
-            id: 'default-proj-2',
-            name: 'Paragon',
-            intro: 'A resource management platform for field engineers.',
-            description: '• Developed a robust platform enabling field engineers to store, access, and manage resources for operating electrical equipment.\n• Implemented feature for job management, device types, and manufacturing tracking.',
+            id: '',
+            name: '',
+            intro: '',
+            description: '',
             url: '',
         },
-        {
-            id: 'default-proj-3',
-            name: 'Yamaha Health and Wellness',
-            intro: 'A platform for tracking user health data and providing personalized insights.',
-            description: '• This platform tracks user health data, providing personalized insights into hydration, sleep patterns, and physical activity.\n• It is an innovative platform focused on promoting holistic health and wellness.\n• Technologies: Python RestAPIs, PostgreSQL, Docker, AWS(S3, EC2, RDS, ELB, Secret Manager)',
-            url: 'https://api.yamahahealthandwellness.com/',
-        }
     ],
     achievements: [
         {
-            id: 'default-achieve-1',
-            title: 'Exceptional Workmanship',
-            description: 'High-quality work was consistently delivered ahead of schedule, reflecting dedication and attention to detail.',
+            id: '',
+            title: '',
+            description: '',
         },
-        {
-            id: 'default-achieve-2',
-            title: 'Team Collaboration',
-            description: 'Played a key role in team projects, providing valuable insight and support to colleagues, resulting in successful project completion.',
-        }
-    ]
+    ],
+    sectionOrder: ['experience', 'education', 'skills', 'projects', 'achievements'],
 };

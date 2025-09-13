@@ -52,6 +52,10 @@ export function ResumeProvider({ children }: { children: ReactNode }) {
         if (user) { // User is logged in
             try {
                 const [resume, design] = await Promise.all([getResumeData(user.uid), getDesignState(user.uid)]);
+                // Ensure sectionOrder exists
+                if (!resume.sectionOrder || resume.sectionOrder.length === 0) {
+                    resume.sectionOrder = defaultResumeData.sectionOrder;
+                }
                 setResumeDataState(resume);
                 setDesignState(design);
             } catch (error) {

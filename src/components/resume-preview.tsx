@@ -36,13 +36,88 @@ const DescriptionRenderer = ({ content }: { content?: string }) => {
 
 const ResumePreview = React.forwardRef<HTMLDivElement>((props, ref) => {
   const { resumeData, design, isInitialized } = useResumeStore();
-  const { personalDetails, experience, education, skills, projects, achievements } = resumeData;
+  const { personalDetails, experience, education, skills, projects, achievements, sectionOrder } = resumeData;
 
   const styles = {
     '--preview-primary-color': design.primaryColor,
     fontSize: `${design.fontSize}pt`,
     fontFamily: design.fontFamily,
   } as React.CSSProperties;
+
+  const sectionComponents: Record<string, React.ReactNode> = {
+    experience: experience && experience.length > 0 && (
+      <Section key="experience" title="Work Experience" icon={<Briefcase className="w-5 h-5" />}>
+        {experience.map(exp => (
+            <div key={exp.id} className="mb-4 last:mb-0">
+                <div className="flex justify-between items-baseline mb-1">
+                    <h3 className="font-bold text-base">{exp.role}, <span className="font-normal italic">{exp.company}</span></h3>
+                    <div className="text-sm font-medium text-gray-600 text-right">
+                        <div>{exp.startDate} &ndash; {exp.endDate}</div>
+                        {exp.location && <div className="italic">{exp.location}</div>}
+                    </div>
+                </div>
+                <DescriptionRenderer content={exp.description} />
+            </div>
+        ))}
+      </Section>
+    ),
+    education: education && education.length > 0 && (
+      <Section key="education" title="Education" icon={<GraduationCap className="w-5 h-5" />}>
+        {education.map(edu => (
+            <div key={edu.id} className="mb-3 last:mb-0">
+                <div className="flex justify-between items-baseline">
+                    <h3 className="font-bold text-base">{edu.institution}</h3>
+                    <p className="text-sm font-medium text-gray-600">{edu.startDate} &ndash; {edu.endDate}</p>
+                </div>
+                <div className="flex justify-between items-baseline">
+                    <h4 className="text-base italic">{edu.degree}</h4>
+                     <p className="text-sm italic text-gray-600">{edu.description}</p>
+                </div>
+            </div>
+        ))}
+      </Section>
+    ),
+    skills: skills && skills.length > 0 && (
+      <Section key="skills" title="Skills" icon={<Star className="w-5 h-5" />}>
+        <div className="space-y-3">
+            {skills.map(category => (
+                (category.category || category.skills.length > 0) && (
+                    <div key={category.id}>
+                        {category.category && <h3 className="font-bold text-base mb-2">{category.category}</h3>}
+                        <div className="flex flex-wrap gap-x-2 gap-y-2">
+                            {category.skills.map(skill => (
+                                <span key={skill.id} className="bg-gray-200 text-gray-800 text-sm font-medium px-3 py-1 rounded-full">{skill.name}</span>
+                            ))}
+                        </div>
+                    </div>
+                )
+            ))}
+        </div>
+      </Section>
+    ),
+    projects: projects && projects.length > 0 && (
+      <Section key="projects" title="Projects" icon={<Lightbulb className="w-5 h-5" />}>
+         {projects.map(proj => (
+            <div key={proj.id} className="mb-3 last:mb-0">
+                <h3 className="font-bold text-base inline">{proj.name}</h3>
+                {proj.url && <a href={proj.url} target="_blank" rel="noopener noreferrer" className="text-primary hover:underline ml-2">({proj.url}) <ExternalLink className="inline w-4 h-4" /></a>}
+                {proj.intro && <p className="text-sm italic text-gray-600 my-1 text-justify">{proj.intro}</p>}
+                <DescriptionRenderer content={proj.description} />
+            </div>
+        ))}
+      </Section>
+    ),
+    achievements: achievements && achievements.length > 0 && (
+      <Section key="achievements" title="Achievements" icon={<Trophy className="w-5 h-5" />}>
+         {achievements.map(ach => (
+            <div key={ach.id} className="mb-3 last:mb-0">
+                <h3 className="font-bold text-base">{ach.title}</h3>
+                <DescriptionRenderer content={ach.description} />
+            </div>
+        ))}
+      </Section>
+    )
+  };
 
   if (!isInitialized) {
     return (
@@ -85,87 +160,9 @@ const ResumePreview = React.forwardRef<HTMLDivElement>((props, ref) => {
             </section>
         )}
 
-        {/* Experience */}
-        {experience && experience.length > 0 && (
-            <Section title="Work Experience" icon={<Briefcase className="w-5 h-5" />}>
-                {experience.map(exp => (
-                    <div key={exp.id} className="mb-4 last:mb-0">
-                        <div className="flex justify-between items-baseline mb-1">
-                            <h3 className="font-bold text-base">{exp.role}, <span className="font-normal italic">{exp.company}</span></h3>
-                            <div className="text-sm font-medium text-gray-600 text-right">
-                                <div>{exp.startDate} &ndash; {exp.endDate}</div>
-                                {exp.location && <div className="italic">{exp.location}</div>}
-                            </div>
-                        </div>
-                        <DescriptionRenderer content={exp.description} />
-                    </div>
-                ))}
-            </Section>
-        )}
-        
-        {/* Education */}
-        {education && education.length > 0 && (
-            <Section title="Education" icon={<GraduationCap className="w-5 h-5" />}>
-                {education.map(edu => (
-                    <div key={edu.id} className="mb-3 last:mb-0">
-                        <div className="flex justify-between items-baseline">
-                            <h3 className="font-bold text-base">{edu.institution}</h3>
-                            <p className="text-sm font-medium text-gray-600">{edu.startDate} &ndash; {edu.endDate}</p>
-                        </div>
-                        <div className="flex justify-between items-baseline">
-                            <h4 className="text-base italic">{edu.degree}</h4>
-                             <p className="text-sm italic text-gray-600">{edu.description}</p>
-                        </div>
-                    </div>
-                ))}
-            </Section>
-        )}
+        {/* Dynamic Sections */}
+        {sectionOrder && sectionOrder.map(sectionId => sectionComponents[sectionId])}
 
-        {/* Skills */}
-        {skills && skills.length > 0 && (
-            <Section title="Skills" icon={<Star className="w-5 h-5" />}>
-                <div className="space-y-3">
-                    {skills.map(category => (
-                        (category.category || category.skills.length > 0) && (
-                            <div key={category.id}>
-                                {category.category && <h3 className="font-bold text-base mb-2">{category.category}</h3>}
-                                <div className="flex flex-wrap gap-x-2 gap-y-2">
-                                    {category.skills.map(skill => (
-                                        <span key={skill.id} className="bg-gray-200 text-gray-800 text-sm font-medium px-3 py-1 rounded-full">{skill.name}</span>
-                                    ))}
-                                </div>
-                            </div>
-                        )
-                    ))}
-                </div>
-            </Section>
-        )}
-
-        {/* Projects */}
-        {projects && projects.length > 0 && (
-            <Section title="Projects" icon={<Lightbulb className="w-5 h-5" />}>
-                 {projects.map(proj => (
-                    <div key={proj.id} className="mb-3 last:mb-0">
-                        <h3 className="font-bold text-base inline">{proj.name}</h3>
-                        {proj.url && <a href={proj.url} target="_blank" rel="noopener noreferrer" className="text-primary hover:underline ml-2">({proj.url}) <ExternalLink className="inline w-4 h-4" /></a>}
-                        {proj.intro && <p className="text-sm italic text-gray-600 my-1 text-justify">{proj.intro}</p>}
-                        <DescriptionRenderer content={proj.description} />
-                    </div>
-                ))}
-            </Section>
-        )}
-        
-        {/* Achievements */}
-        {achievements && achievements.length > 0 && (
-            <Section title="Achievements" icon={<Trophy className="w-5 h-5" />}>
-                 {achievements.map(ach => (
-                    <div key={ach.id} className="mb-3 last:mb-0">
-                        <h3 className="font-bold text-base">{ach.title}</h3>
-                        <DescriptionRenderer content={ach.description} />
-                    </div>
-                ))}
-            </Section>
-        )}
       </div>
     </div>
   );
