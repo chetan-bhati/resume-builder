@@ -9,7 +9,8 @@ import SkillsForm from './resume-form/skills-form';
 import ProjectsForm from './resume-form/projects-form';
 import AchievementsForm from './resume-form/achievements-form';
 import LayoutForm from './resume-form/layout-form';
-import { User, Briefcase, GraduationCap, Star, Lightbulb, Trophy, LayoutDashboard } from 'lucide-react';
+import CustomSectionsForm from './resume-form/custom-sections-form';
+import { User, Briefcase, GraduationCap, Star, Lightbulb, Trophy, LayoutDashboard, Shapes } from 'lucide-react';
 
 export default function ResumeForm() {
   return (
@@ -22,6 +23,7 @@ export default function ResumeForm() {
           <TabsTrigger value="skills"><Star className="mr-0 sm:mr-2 h-4 w-4"/><span className="hidden sm:inline">Skills</span></TabsTrigger>
           <TabsTrigger value="projects"><Lightbulb className="mr-0 sm:mr-2 h-4 w-4"/><span className="hidden sm:inline">Projects</span></TabsTrigger>
           <TabsTrigger value="achievements"><Trophy className="mr-0 sm:mr-2 h-4 w-4"/><span className="hidden sm:inline">Achievements</span></TabsTrigger>
+          <TabsTrigger value="custom"><Shapes className="mr-0 sm:mr-2 h-4 w-4"/><span className="hidden sm:inline">Custom</span></TabsTrigger>
           <TabsTrigger value="layout"><LayoutDashboard className="mr-0 sm:mr-2 h-4 w-4"/><span className="hidden sm:inline">Layout</span></TabsTrigger>
         </TabsList>
         <TabsContent value="personal">
@@ -41,6 +43,9 @@ export default function ResumeForm() {
         </TabsContent>
         <TabsContent value="achievements">
           <AchievementsForm />
+        </TabsContent>
+        <TabsContent value="custom">
+          <CustomSectionsForm />
         </TabsContent>
         <TabsContent value="layout">
           <LayoutForm />

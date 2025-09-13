@@ -8,7 +8,7 @@ import { Button } from '@/components/ui/button';
 import { GripVertical, ArrowUp, ArrowDown } from 'lucide-react';
 import type { SectionId } from '@/lib/types';
 
-const sectionLabels: Record<SectionId, string> = {
+const defaultSectionLabels: Record<SectionId, string> = {
   experience: 'Work Experience',
   education: 'Education',
   skills: 'Skills',
@@ -18,13 +18,21 @@ const sectionLabels: Record<SectionId, string> = {
 
 export default function LayoutForm() {
   const { resumeData, setResumeData, isInitialized } = useResumeStore();
-  const [draggedItem, setDraggedItem] = useState<SectionId | null>(null);
+  const [draggedItem, setDraggedItem] = useState<string | null>(null);
 
   if (!isInitialized) {
     return <div>Loading...</div>;
   }
   
-  const onDragStart = (e: React.DragEvent<HTMLDivElement>, item: SectionId) => {
+  const getSectionLabel = (sectionId: string): string => {
+    if (sectionId in defaultSectionLabels) {
+      return defaultSectionLabels[sectionId as SectionId];
+    }
+    const customSection = resumeData.customSections.find(s => s.id === sectionId);
+    return customSection?.title || 'Custom Section';
+  }
+
+  const onDragStart = (e: React.DragEvent<HTMLDivElement>, item: string) => {
     setDraggedItem(item);
     e.dataTransfer.effectAllowed = 'move';
     e.dataTransfer.setData('text/plain', item);
@@ -34,7 +42,7 @@ export default function LayoutForm() {
     e.preventDefault(); 
   };
   
-  const onDrop = (e: React.DragEvent<HTMLDivElement>, targetItem: SectionId) => {
+  const onDrop = (e: React.DragEvent<HTMLDivElement>, targetItem: string) => {
     e.preventDefault();
     if (draggedItem === null) return;
     
@@ -51,7 +59,7 @@ export default function LayoutForm() {
     setDraggedItem(null);
   };
 
-  const moveSection = (section: SectionId, direction: 'up' | 'down') => {
+  const moveSection = (section: string, direction: 'up' | 'down') => {
     const index = resumeData.sectionOrder.indexOf(section);
     if (index === -1) return;
     
@@ -85,7 +93,7 @@ export default function LayoutForm() {
             >
               <div className="flex items-center">
                 <GripVertical className="h-5 w-5 mr-3 text-muted-foreground" />
-                <span className="font-medium">{sectionLabels[sectionId]}</span>
+                <span className="font-medium">{getSectionLabel(sectionId)}</span>
               </div>
               <div className="flex items-center gap-1">
                 <Button variant="ghost" size="icon" onClick={() => moveSection(sectionId, 'up')} disabled={index === 0}>

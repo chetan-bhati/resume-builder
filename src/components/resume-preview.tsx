@@ -3,7 +3,7 @@
 
 import React from 'react';
 import { useResumeStore } from '@/hooks/use-resume-store.tsx';
-import { Mail, Phone, Globe, MapPin, ExternalLink, Briefcase, GraduationCap, Star, Lightbulb, Trophy } from 'lucide-react';
+import { Mail, Phone, Globe, MapPin, ExternalLink, Briefcase, GraduationCap, Star, Lightbulb, Trophy, StarIcon } from 'lucide-react';
 import { Skeleton } from './ui/skeleton';
 
 const Section = ({ title, icon, children, className }: { title: string, icon: React.ReactNode, children: React.ReactNode, className?: string }) => (
@@ -36,7 +36,7 @@ const DescriptionRenderer = ({ content }: { content?: string }) => {
 
 const ResumePreview = React.forwardRef<HTMLDivElement>((props, ref) => {
   const { resumeData, design, isInitialized } = useResumeStore();
-  const { personalDetails, experience, education, skills, projects, achievements, sectionOrder } = resumeData;
+  const { personalDetails, experience, education, skills, projects, achievements, customSections, sectionOrder } = resumeData;
 
   const styles = {
     '--preview-primary-color': design.primaryColor,
@@ -118,6 +118,19 @@ const ResumePreview = React.forwardRef<HTMLDivElement>((props, ref) => {
       </Section>
     )
   };
+  
+  if (customSections) {
+      customSections.forEach(section => {
+          if (section.title || section.description) {
+            sectionComponents[section.id] = (
+                <Section key={section.id} title={section.title} icon={<StarIcon className="w-5 h-5" />}>
+                    <DescriptionRenderer content={section.description} />
+                </Section>
+            );
+          }
+      });
+  }
+
 
   if (!isInitialized) {
     return (

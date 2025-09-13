@@ -52,10 +52,21 @@ export function ResumeProvider({ children }: { children: ReactNode }) {
         if (user) { // User is logged in
             try {
                 const [resume, design] = await Promise.all([getResumeData(user.uid), getDesignState(user.uid)]);
-                // Ensure sectionOrder exists
-                if (!resume.sectionOrder || resume.sectionOrder.length === 0) {
-                    resume.sectionOrder = defaultResumeData.sectionOrder;
+                // Ensure sectionOrder exists and contains all default and custom sections
+                const defaultOrder = defaultResumeData.sectionOrder;
+                const existingOrder = resume.sectionOrder || [];
+                const allCustomIds = (resume.customSections || []).map(s => s.id);
+                
+                const combined = [...defaultOrder, ...allCustomIds];
+                const finalOrder = [...new Set(existingOrder.concat(combined))].filter(id => {
+                    return defaultOrder.includes(id) || allCustomIds.includes(id);
+                });
+
+                resume.sectionOrder = finalOrder;
+                if (!resume.customSections) {
+                    resume.customSections = [];
                 }
+
                 setResumeDataState(resume);
                 setDesignState(design);
             } catch (error) {

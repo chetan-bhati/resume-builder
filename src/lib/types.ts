@@ -63,6 +63,13 @@ export const achievementSchema = z.object({
 });
 export type Achievement = z.infer<typeof achievementSchema>;
 
+export const customSectionSchema = z.object({
+    id: z.string().default(() => crypto.randomUUID()),
+    title: z.string().min(1, 'Title is required'),
+    description: z.string().optional(),
+});
+export type CustomSection = z.infer<typeof customSectionSchema>;
+
 export const sectionIdSchema = z.enum(['experience', 'education', 'skills', 'projects', 'achievements']);
 export type SectionId = z.infer<typeof sectionIdSchema>;
 
@@ -73,7 +80,8 @@ export const resumeDataSchema = z.object({
   skills: z.array(skillSchema),
   projects: z.array(projectSchema),
   achievements: z.array(achievementSchema),
-  sectionOrder: z.array(sectionIdSchema),
+  customSections: z.array(customSectionSchema),
+  sectionOrder: z.array(z.string()),
 });
 export type ResumeData = z.infer<typeof resumeDataSchema>;
 
@@ -143,5 +151,6 @@ export const defaultResumeData: ResumeData = {
             description: '',
         },
     ],
+    customSections: [],
     sectionOrder: ['experience', 'education', 'skills', 'projects', 'achievements'],
 };
