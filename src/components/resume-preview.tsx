@@ -43,16 +43,19 @@ const ResumePreview = React.forwardRef<HTMLDivElement>((props, ref) => {
     fontSize: `${design.fontSize}pt`,
     fontFamily: design.fontFamily,
   } as React.CSSProperties;
+  
+  const hasContent = (arr: any[] | undefined) => Array.isArray(arr) && arr.length > 0 && arr.some(item => Object.values(item).some(v => !!v));
 
   const sectionComponents: Record<string, React.ReactNode> = {
-    experience: experience && experience.length > 0 && (
+    experience: hasContent(experience) && (
       <Section key="experience" title="Work Experience" icon={<Briefcase className="w-5 h-5" />}>
         {experience.map(exp => (
+            (exp.role || exp.company) &&
             <div key={exp.id} className="mb-4 last:mb-0">
                 <div className="flex justify-between items-baseline mb-1">
-                    <h3 className="font-bold text-base">{exp.role}, <span className="font-normal italic">{exp.company}</span></h3>
+                    <h3 className="font-bold text-base">{exp.role && `${exp.role}, `}<span className="font-normal italic">{exp.company}</span></h3>
                     <div className="text-sm font-medium text-gray-600 text-right">
-                        <div>{exp.startDate} &ndash; {exp.endDate}</div>
+                        <div>{exp.startDate && `${exp.startDate} – `}{exp.endDate}</div>
                         {exp.location && <div className="italic">{exp.location}</div>}
                     </div>
                 </div>
@@ -61,13 +64,14 @@ const ResumePreview = React.forwardRef<HTMLDivElement>((props, ref) => {
         ))}
       </Section>
     ),
-    education: education && education.length > 0 && (
+    education: hasContent(education) && (
       <Section key="education" title="Education" icon={<GraduationCap className="w-5 h-5" />}>
         {education.map(edu => (
+            (edu.institution || edu.degree) &&
             <div key={edu.id} className="mb-3 last:mb-0">
                 <div className="flex justify-between items-baseline">
                     <h3 className="font-bold text-base">{edu.institution}</h3>
-                    <p className="text-sm font-medium text-gray-600">{edu.startDate} &ndash; {edu.endDate}</p>
+                    <p className="text-sm font-medium text-gray-600">{edu.startDate && `${edu.startDate} – `}{edu.endDate}</p>
                 </div>
                 <div className="flex justify-between items-baseline">
                     <h4 className="text-base italic">{edu.degree}</h4>
@@ -77,7 +81,7 @@ const ResumePreview = React.forwardRef<HTMLDivElement>((props, ref) => {
         ))}
       </Section>
     ),
-    skills: skills && skills.length > 0 && (
+    skills: skills && skills.some(s => s.category || s.skills.length > 0) && (
       <Section key="skills" title="Skills" icon={<Star className="w-5 h-5" />}>
         <div className="space-y-3">
             {skills.map(category => (
@@ -86,7 +90,7 @@ const ResumePreview = React.forwardRef<HTMLDivElement>((props, ref) => {
                         {category.category && <h3 className="font-bold text-base mb-2">{category.category}</h3>}
                         <div className="flex flex-wrap gap-x-2 gap-y-2">
                             {category.skills.map(skill => (
-                                <span key={skill.id} className="bg-gray-200 text-gray-800 text-sm font-medium px-3 py-1 rounded-full">{skill.name}</span>
+                                skill.name && <span key={skill.id} className="bg-gray-200 text-gray-800 text-sm font-medium px-3 py-1 rounded-full">{skill.name}</span>
                             ))}
                         </div>
                     </div>
@@ -95,9 +99,10 @@ const ResumePreview = React.forwardRef<HTMLDivElement>((props, ref) => {
         </div>
       </Section>
     ),
-    projects: projects && projects.length > 0 && (
+    projects: hasContent(projects) && (
       <Section key="projects" title="Projects" icon={<Lightbulb className="w-5 h-5" />}>
          {projects.map(proj => (
+            proj.name &&
             <div key={proj.id} className="mb-3 last:mb-0">
                 <h3 className="font-bold text-base inline">{proj.name}</h3>
                 {proj.url && <a href={proj.url} target="_blank" rel="noopener noreferrer" className="text-primary hover:underline ml-2">({proj.url}) <ExternalLink className="inline w-4 h-4" /></a>}
@@ -107,9 +112,10 @@ const ResumePreview = React.forwardRef<HTMLDivElement>((props, ref) => {
         ))}
       </Section>
     ),
-    achievements: achievements && achievements.length > 0 && (
+    achievements: hasContent(achievements) && (
       <Section key="achievements" title="Achievements" icon={<Trophy className="w-5 h-5" />}>
          {achievements.map(ach => (
+            ach.title &&
             <div key={ach.id} className="mb-3 last:mb-0">
                 <h3 className="font-bold text-base">{ach.title}</h3>
                 <DescriptionRenderer content={ach.description} />

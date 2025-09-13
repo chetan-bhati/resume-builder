@@ -103,54 +103,11 @@ export const defaultResumeData: ResumeData = {
         location: '',
         summary: "",
     },
-    experience: 
-    [
-        {
-            id: '',
-            company: '',
-            role: '',
-            startDate: '',
-            endDate: '',
-            location: '',
-            description: '',
-        },
-      ],
-    
-    education: [
-        {
-            id: '',
-            institution: '',
-            degree: '',
-            startDate: '',
-            endDate: '',
-            description: '',
-        },
-    ],
-    skills: [
-        {
-          id: '',
-          category: '',
-          skills: [
-            { id: '', name: '' },
-          ]
-        },
-    ],
-    projects: [
-        {
-            id: '',
-            name: '',
-            intro: '',
-            description: '',
-            url: '',
-        },
-    ],
-    achievements: [
-        {
-            id: '',
-            title: '',
-            description: '',
-        },
-    ],
+    experience: [],
+    education: [],
+    skills: [],
+    projects: [],
+    achievements: [],
     customSections: [],
     sectionOrder: ['experience', 'education', 'skills', 'projects', 'achievements'],
 };

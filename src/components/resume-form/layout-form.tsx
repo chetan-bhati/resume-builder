@@ -71,6 +71,12 @@ export default function LayoutForm() {
         draft.sectionOrder.splice(newIndex, 0, item);
     });
   }
+  
+  const orderedSections = resumeData.sectionOrder.filter(id => {
+    if (id in defaultSectionLabels) return true;
+    const customSection = resumeData.customSections.find(s => s.id === id);
+    return !!customSection?.title;
+  });
 
   return (
     <Card>
@@ -82,7 +88,7 @@ export default function LayoutForm() {
       </CardHeader>
       <CardContent>
         <div className="space-y-2">
-          {resumeData.sectionOrder.map((sectionId, index) => (
+          {orderedSections.map((sectionId, index) => (
             <div
               key={sectionId}
               className="flex items-center justify-between p-3 border rounded-md bg-background hover:bg-muted transition-colors cursor-grab"
@@ -99,7 +105,7 @@ export default function LayoutForm() {
                 <Button variant="ghost" size="icon" onClick={() => moveSection(sectionId, 'up')} disabled={index === 0}>
                     <ArrowUp className="h-4 w-4" />
                 </Button>
-                 <Button variant="ghost" size="icon" onClick={() => moveSection(sectionId, 'down')} disabled={index === resumeData.sectionOrder.length - 1}>
+                 <Button variant="ghost" size="icon" onClick={() => moveSection(sectionId, 'down')} disabled={index === orderedSections.length - 1}>
                     <ArrowDown className="h-4 w-4" />
                 </Button>
               </div>
