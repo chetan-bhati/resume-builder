@@ -15,7 +15,7 @@ export default function ResumeForm() {
   return (
     <div className="p-6">
       <Tabs defaultValue="personal" className="w-full">
-        <TabsList className="grid w-full grid-cols-4 sm:grid-cols-7 mb-4 h-auto flex-wrap sm:h-auto">
+        <TabsList className="w-full justify-start h-auto mb-4 flex-wrap">
           <TabsTrigger value="personal"><User className="mr-0 sm:mr-2 h-4 w-4" /><span className="hidden sm:inline">Personal</span></TabsTrigger>
           <TabsTrigger value="experience"><Briefcase className="mr-0 sm:mr-2 h-4 w-4"/><span className="hidden sm:inline">Experience</span></TabsTrigger>
           <TabsTrigger value="education"><GraduationCap className="mr-0 sm:mr-2 h-4 w-4"/><span className="hidden sm:inline">Education</span></TabsTrigger>
