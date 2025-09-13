@@ -65,8 +65,8 @@ export default function CustomSectionsForm() {
   const handleRemove = (index: number, id: string) => {
     remove(index);
     setResumeData(draft => {
-        draft.sectionOrder = draft.sectionOrder.filter(sectionId => sectionId !== id);
         draft.customSections = draft.customSections.filter(section => section.id !== id);
+        draft.sectionOrder = draft.sectionOrder.filter(sectionId => sectionId !== id);
     });
   }
 
