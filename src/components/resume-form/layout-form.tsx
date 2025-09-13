@@ -16,6 +16,10 @@ const defaultSectionLabels: Record<SectionId, string> = {
   achievements: 'Achievements',
 };
 
+const hasContent = (data: any[] | undefined): boolean => {
+    return Array.isArray(data) && data.length > 0;
+}
+
 export default function LayoutForm() {
   const { resumeData, setResumeData, isInitialized } = useResumeStore();
   const [draggedItem, setDraggedItem] = useState<string | null>(null);
@@ -73,7 +77,12 @@ export default function LayoutForm() {
   }
   
   const orderedSections = resumeData.sectionOrder.filter(id => {
-    if (id in defaultSectionLabels) return true;
+    if (id === 'experience') return hasContent(resumeData.experience);
+    if (id === 'education') return hasContent(resumeData.education);
+    if (id === 'skills') return hasContent(resumeData.skills);
+    if (id === 'projects') return hasContent(resumeData.projects);
+    if (id === 'achievements') return hasContent(resumeData.achievements);
+    
     const customSection = resumeData.customSections.find(s => s.id === id);
     return !!customSection?.title;
   });
@@ -87,31 +96,38 @@ export default function LayoutForm() {
         </CardDescription>
       </CardHeader>
       <CardContent>
-        <div className="space-y-2">
-          {orderedSections.map((sectionId, index) => (
-            <div
-              key={sectionId}
-              className="flex items-center justify-between p-3 border rounded-md bg-background hover:bg-muted transition-colors cursor-grab"
-              draggable
-              onDragStart={(e) => onDragStart(e, sectionId)}
-              onDragOver={onDragOver}
-              onDrop={(e) => onDrop(e, sectionId)}
-            >
-              <div className="flex items-center">
-                <GripVertical className="h-5 w-5 mr-3 text-muted-foreground" />
-                <span className="font-medium">{getSectionLabel(sectionId)}</span>
-              </div>
-              <div className="flex items-center gap-1">
-                <Button variant="ghost" size="icon" onClick={() => moveSection(sectionId, 'up')} disabled={index === 0}>
-                    <ArrowUp className="h-4 w-4" />
-                </Button>
-                 <Button variant="ghost" size="icon" onClick={() => moveSection(sectionId, 'down')} disabled={index === orderedSections.length - 1}>
-                    <ArrowDown className="h-4 w-4" />
-                </Button>
-              </div>
+        {orderedSections.length > 0 ? (
+            <div className="space-y-2">
+            {orderedSections.map((sectionId, index) => (
+                <div
+                key={sectionId}
+                className="flex items-center justify-between p-3 border rounded-md bg-background hover:bg-muted transition-colors cursor-grab"
+                draggable
+                onDragStart={(e) => onDragStart(e, sectionId)}
+                onDragOver={onDragOver}
+                onDrop={(e) => onDrop(e, sectionId)}
+                >
+                <div className="flex items-center">
+                    <GripVertical className="h-5 w-5 mr-3 text-muted-foreground" />
+                    <span className="font-medium">{getSectionLabel(sectionId)}</span>
+                </div>
+                <div className="flex items-center gap-1">
+                    <Button variant="ghost" size="icon" onClick={() => moveSection(sectionId, 'up')} disabled={index === 0}>
+                        <ArrowUp className="h-4 w-4" />
+                    </Button>
+                    <Button variant="ghost" size="icon" onClick={() => moveSection(sectionId, 'down')} disabled={index === orderedSections.length - 1}>
+                        <ArrowDown className="h-4 w-4" />
+                    </Button>
+                </div>
+                </div>
+            ))}
             </div>
-          ))}
-        </div>
+        ) : (
+            <div className="text-center text-muted-foreground p-8 border-2 border-dashed rounded-md">
+                <p>No sections with content to display.</p>
+                <p className="text-sm">Add some content to other tabs first.</p>
+            </div>
+        )}
       </CardContent>
     </Card>
   );
