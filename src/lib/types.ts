@@ -1,14 +1,21 @@
 
 import { z } from 'zod';
 
+export const linkSchema = z.object({
+  id: z.string().default(() => crypto.randomUUID()),
+  label: z.string().min(1, 'Label cannot be empty'),
+  url: z.string().url('Invalid URL').min(1, 'URL cannot be empty'),
+});
+export type Link = z.infer<typeof linkSchema>;
+
 export const personalDetailsSchema = z.object({
   name: z.string().min(1, 'Name is required'),
   email: z.string().email('Invalid email address'),
   phone: z.string().optional(),
-  website: z.string().url('Invalid URL').optional().or(z.literal('')),
   location: z.string().optional(),
   summary: z.string().optional(),
   role: z.string().optional(),
+  links: z.array(linkSchema).optional(),
 });
 export type PersonalDetails = z.infer<typeof personalDetailsSchema>;
 
@@ -99,9 +106,9 @@ export const defaultResumeData: ResumeData = {
         role: '',
         email: '',
         phone: '',
-        website: '',
         location: '',
         summary: "",
+        links: [],
     },
     experience: [],
     education: [],

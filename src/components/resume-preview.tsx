@@ -167,8 +167,12 @@ const ResumePreview = React.forwardRef<HTMLDivElement>((props, ref) => {
             <div className="flex justify-center items-center gap-x-4 gap-y-1 mt-4 text-sm flex-wrap">
                 {personalDetails.email && <a href={`mailto:${personalDetails.email}`} className="flex items-center gap-1 hover:underline"><Mail className="w-4 h-4" /> {personalDetails.email}</a>}
                 {personalDetails.phone && <span className="flex items-center gap-1"><Phone className="w-4 h-4" /> {personalDetails.phone}</span>}
-                {personalDetails.website && <a href={personalDetails.website} target="_blank" rel="noreferrer noopener" className="flex items-center gap-1 hover:underline"><Globe className="w-4 h-4" /> {personalDetails.website}</a>}
                 {personalDetails.location && <span className="flex items-center gap-1"><MapPin className="w-4 h-4" /> {personalDetails.location}</span>}
+                {personalDetails.links && personalDetails.links.map(link => (
+                    <a key={link.id} href={link.url} target="_blank" rel="noreferrer noopener" className="flex items-center gap-1 hover:underline">
+                        <Globe className="w-4 h-4" /> {link.label}
+                    </a>
+                ))}
             </div>
         </header>
 
