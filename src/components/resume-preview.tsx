@@ -28,7 +28,7 @@ const DescriptionRenderer = ({ content }: { content?: string }) => {
             {lines.map((line, index) => {
                  const cleanedLine = line.replace(/^•\s*/, '').trim();
                  if (!cleanedLine) return null;
-                 return <li key={index}>{cleanedLine}</li>;
+                 return <li key={index} className="text-justify">{cleanedLine}</li>;
             })}
         </ul>
     );
@@ -81,7 +81,7 @@ const ResumePreview = React.forwardRef<HTMLDivElement>((props, ref) => {
         {/* Summary */}
         {personalDetails.summary && (
             <section className="mb-6">
-                <p className="text-center text-sm">{personalDetails.summary}</p>
+                <p className="text-justify text-sm">{personalDetails.summary}</p>
             </section>
         )}
 
@@ -148,7 +148,7 @@ const ResumePreview = React.forwardRef<HTMLDivElement>((props, ref) => {
                     <div key={proj.id} className="mb-3 last:mb-0">
                         <h3 className="font-bold text-base inline">{proj.name}</h3>
                         {proj.url && <a href={proj.url} target="_blank" rel="noopener noreferrer" className="text-primary hover:underline ml-2">({proj.url}) <ExternalLink className="inline w-4 h-4" /></a>}
-                        {proj.intro && <p className="text-sm italic text-gray-600 my-1">{proj.intro}</p>}
+                        {proj.intro && <p className="text-sm italic text-gray-600 my-1 text-justify">{proj.intro}</p>}
                         <DescriptionRenderer content={proj.description} />
                     </div>
                 ))}

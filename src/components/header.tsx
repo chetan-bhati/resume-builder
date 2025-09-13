@@ -33,10 +33,8 @@ export default function Header({ previewRef }: HeaderProps) {
         <header className="flex items-center justify-between p-4 border-b bg-card flex-shrink-0 z-10 no-print">
             <h1 className="text-xl font-bold text-primary">ResumeForge</h1>
             <div className="flex items-center gap-2">
-                {user && (
+                {true && (
                     <>
-                        <AiOptimizerDialog />
-                        <DesignPanel />
                         <Button onClick={handlePrint}>
                             <Download className="mr-2 h-4 w-4" />
                             Download PDF
@@ -45,10 +43,10 @@ export default function Header({ previewRef }: HeaderProps) {
                             <LogOut className="mr-2 h-4 w-4" />
                             Sign Out
                         </Button>
-                        <Avatar>
+                        {/* <Avatar>
                             <AvatarImage src={user.photoURL ?? undefined} />
                             <AvatarFallback>{user.displayName?.charAt(0)}</AvatarFallback>
-                        </Avatar>
+                        </Avatar> */}
                     </>
                 )}
                 {!user && !loading && (
