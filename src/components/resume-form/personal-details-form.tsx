@@ -59,7 +59,7 @@ export default function PersonalDetailsForm() {
                 <FormLabel>Links</FormLabel>
                 <div className="space-y-4">
                 {fields.map((field, index) => (
-                    <div key={field.id} className="flex items-end gap-2">
+                    <div key={field.id} className="flex items-start gap-2">
                         <FormField
                             control={form.control}
                             name={`links.${index}.label`}
