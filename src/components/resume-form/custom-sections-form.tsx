@@ -62,11 +62,19 @@ export default function CustomSectionsForm() {
     });
   }
 
-  const handleRemove = (index: number, id: string) => {
-    remove(index);
+  const handleRemove = (index: number) => {
+    // Get the ID directly from the form state to ensure it's up-to-date
+    const sections = form.getValues().customSections;
+    const idToRemove = sections[index]?.id;
+    
+    if (!idToRemove) return;
+
+    remove(index); // From react-hook-form
+    
+    // Update the main store
     setResumeData(draft => {
-        draft.customSections = draft.customSections.filter(section => section.id !== id);
-        draft.sectionOrder = draft.sectionOrder.filter(sectionId => sectionId !== id);
+        draft.customSections = draft.customSections.filter(section => section.id !== idToRemove);
+        draft.sectionOrder = draft.sectionOrder.filter(sectionId => sectionId !== idToRemove);
     });
   }
 
@@ -86,7 +94,7 @@ export default function CustomSectionsForm() {
                     <AccordionTrigger className="flex-1 text-sm font-medium py-2 text-left">
                         {form.watch(`customSections.${index}.title`) || 'New Section'}
                     </AccordionTrigger>
-                    <Button variant="ghost" size="icon" onClick={() => handleRemove(index, field.id)}><Trash2 className="h-4 w-4 text-destructive" /></Button>
+                    <Button variant="ghost" size="icon" onClick={() => handleRemove(index)}><Trash2 className="h-4 w-4 text-destructive" /></Button>
                   </div>
                   <AccordionContent className="p-4 border border-t-0 rounded-b-md">
                     <div className="space-y-4">
