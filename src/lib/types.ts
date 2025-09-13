@@ -35,14 +35,14 @@ export type Education = z.infer<typeof educationSchema>;
 
 export const skillItemSchema = z.object({
   id: z.string(),
-  name: z.string().min(1, 'Skill name is required'),
+  name: z.string().min(1, 'Skill name cannot be empty'),
 });
 export type SkillItem = z.infer<typeof skillItemSchema>;
 
 export const skillSchema = z.object({
   id: z.string().default(() => crypto.randomUUID()),
-  category: z.string().min(1, 'Category is required'),
-  skills: z.array(skillItemSchema),
+  category: z.string().min(1, 'Category name cannot be empty'),
+  skills: z.array(skillItemSchema).min(0),
 });
 export type Skill = z.infer<typeof skillSchema>;
 
