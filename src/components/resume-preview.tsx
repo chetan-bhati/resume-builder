@@ -124,9 +124,18 @@ const ResumePreview = React.forwardRef<HTMLDivElement>((props, ref) => {
         {/* Skills */}
         {skills && skills.length > 0 && (
             <Section title="Skills" icon={<Star className="w-5 h-5" />}>
-                <div className="flex flex-wrap gap-x-4 gap-y-2">
-                    {skills.map(skill => (
-                        <span key={skill.id} className="bg-gray-200 text-gray-800 text-sm font-medium px-3 py-1 rounded-full">{skill.name}</span>
+                <div className="space-y-3">
+                    {skills.map(category => (
+                        (category.category || category.skills.length > 0) && (
+                            <div key={category.id}>
+                                {category.category && <h3 className="font-bold text-base mb-2">{category.category}</h3>}
+                                <div className="flex flex-wrap gap-x-2 gap-y-2">
+                                    {category.skills.map(skill => (
+                                        <span key={skill.id} className="bg-gray-200 text-gray-800 text-sm font-medium px-3 py-1 rounded-full">{skill.name}</span>
+                                    ))}
+                                </div>
+                            </div>
+                        )
                     ))}
                 </div>
             </Section>
@@ -163,3 +172,5 @@ const ResumePreview = React.forwardRef<HTMLDivElement>((props, ref) => {
 ResumePreview.displayName = 'ResumePreview';
 
 export default ResumePreview;
+
+    

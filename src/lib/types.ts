@@ -33,12 +33,19 @@ export const educationSchema = z.object({
 });
 export type Education = z.infer<typeof educationSchema>;
 
+export const skillItemSchema = z.object({
+  id: z.string(),
+  name: z.string().min(1, 'Skill name is required'),
+});
+export type SkillItem = z.infer<typeof skillItemSchema>;
+
 export const skillSchema = z.object({
   id: z.string().default(() => crypto.randomUUID()),
-  name: z.string().min(1, 'Skill name is required'),
-  level: z.enum(['Beginner', 'Intermediate', 'Advanced', 'Expert']).optional(),
+  category: z.string().min(1, 'Category is required'),
+  skills: z.array(skillItemSchema),
 });
 export type Skill = z.infer<typeof skillSchema>;
+
 
 export const projectSchema = z.object({
     id: z.string().default(() => crypto.randomUUID()),
@@ -106,12 +113,44 @@ export const defaultResumeData: ResumeData = {
         },
     ],
     skills: [
-        { id: 'default-skill-1', name: 'Python' },
-        { id: 'default-skill-2', name: 'Celery/Redis' },
-        { id: 'default-skill-3', name: 'Docker' },
-        { id: 'default-skill-4', name: 'Django/DRF' },
-        { id: 'default-skill-5', name: 'HTML, CSS, Javascript/Jquery' },
-        { id: 'default-skill-6', name: 'Postgresql/Mysql' },
+        {
+          id: 'default-skill-cat-1',
+          category: 'Languages',
+          skills: [
+            { id: 'default-skill-1', name: 'Python' },
+            { id: 'default-skill-2', name: 'JavaScript (ES6+)' },
+            { id: 'default-skill-3', name: 'HTML5 & CSS3' },
+            { id: 'default-skill-4', name: 'SQL' },
+          ]
+        },
+        {
+          id: 'default-skill-cat-2',
+          category: 'Frameworks & Libraries',
+          skills: [
+            { id: 'default-skill-5', name: 'Django / DRF' },
+            { id: 'default-skill-6', name: 'Celery' },
+            { id: 'default-skill-7', name: 'jQuery' },
+          ]
+        },
+         {
+          id: 'default-skill-cat-3',
+          category: 'Databases & Caching',
+          skills: [
+            { id: 'default-skill-8', name: 'PostgreSQL' },
+            { id: 'default-skill-9', name: 'MySQL' },
+            { id: 'default-skill-10', name: 'Redis' },
+          ]
+        },
+        {
+          id: 'default-skill-cat-4',
+          category: 'DevOps & Cloud',
+          skills: [
+            { id: 'default-skill-11', name: 'Docker' },
+            { id: 'default-skill-12', name: 'AWS (EC2, S3, RDS, ELB)' },
+            { id: 'default-skill-13', name: 'Nginx / Gunicorn' },
+            { id: 'default-skill-14', name: 'Supervisor' },
+          ]
+        },
     ],
     projects: [
         {
