@@ -1,7 +1,7 @@
 "use client";
 
 import React, { useRef } from 'react';
-import { ResumeProvider } from '@/hooks/use-resume-store.tsx';
+import { ResumeProvider } from '@/hooks/use-resume-store';
 import ResumeForm from '@/components/resume-form';
 import ResumePreview from '@/components/resume-preview';
 import Header from '@/components/header';

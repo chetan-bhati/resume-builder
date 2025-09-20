@@ -1,4 +1,3 @@
-
 "use client";
 import React from 'react';
 import { Button } from '@/components/ui/button';
@@ -7,6 +6,7 @@ import AiOptimizerDialog from './ai-optimizer-dialog';
 import DesignPanel from './design-panel';
 import { useAuth } from '@/hooks/use-auth';
 import { Avatar, AvatarFallback, AvatarImage } from './ui/avatar';
+import { useReactToPrint } from 'react-to-print';
 
 interface HeaderProps {
     previewRef: React.RefObject<HTMLDivElement>;
@@ -25,8 +25,28 @@ const GoogleIcon = (props: React.SVGProps<SVGSVGElement>) => (
 export default function Header({ previewRef }: HeaderProps) {
     const { user, signInWithGoogle, signOut, loading } = useAuth();
 
+    const print = useReactToPrint({
+        // provide both content and contentRef so react-to-print validation doesn't warn
+        content: () => previewRef.current,
+        contentRef: previewRef,
+        documentTitle: 'Resume',
+        pageStyle: `
+            @page { size: A4 portrait; margin: 0; }
+            @media print {
+              html, body { -webkit-print-color-adjust: exact; color-adjust: exact; }
+              .no-print { display: none !important; }
+            }
+        `
+    });
+
     const handlePrint = () => {
-        window.print();
+        if (!previewRef?.current) {
+            // preview not mounted or ref not passed
+            alert('Nothing to print — resume preview is not mounted.');
+            return;
+        }
+        // pass the preview node as optional-content to the print call to avoid runtime validation errors
+        print?.(() => previewRef.current);
     };
 
     return (
@@ -43,10 +63,10 @@ export default function Header({ previewRef }: HeaderProps) {
                             <LogOut className="mr-2 h-4 w-4" />
                             Sign Out
                         </Button>
-                        <Avatar>
+                        {/* <Avatar>
                             <AvatarImage src={user.photoURL ?? undefined} />
                             <AvatarFallback>{user.displayName?.charAt(0)}</AvatarFallback>
-                        </Avatar>
+                        </Avatar> */}
                     </>
                 )}
                 {!user && !loading && (

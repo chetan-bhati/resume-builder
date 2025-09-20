@@ -88,17 +88,29 @@ body {
 }
 
 @media print {
-  body, html {
+  /* Force page size and remove browser margins */
+  @page {
+    size: A4 portrait;
+    margin: 0;
+  }
+
+  html, body {
     background: #fff !important;
     color: #000 !important;
     -webkit-print-color-adjust: exact !important;
     color-adjust: exact !important;
+    font-size: 9.4pt; /* slightly smaller to help fit */
+    margin: 5 !important;
+    padding: 5 !important;
+    width: 210mm; /* A4 width */
+    height: 297mm; /* A4 height */
   }
 
   .no-print {
     display: none !important;
   }
-  
+
+  /* Wrapper: use full page and box-sizing so padding is counted */
   #resume-preview-wrapper {
     display: block !important;
     position: static !important;
@@ -106,8 +118,16 @@ body {
     height: auto !important;
     overflow: visible !important;
     background-color: #fff !important;
+    box-sizing: border-box !important;
+    /* scale down to fit a single page; tweak 0.96 as necessary */
+    /* transform-origin: top left;
+    -webkit-transform-origin: top left;
+    transform: scale(0.96) !important;
+    -webkit-transform: scale(0.96) !important;
+    zoom: 0.96 !important; */
   }
 
+  /* Content: remove shadows/borders and ensure full width */
   #resume-preview {
     margin: 0 !important;
     padding: 0 !important;
@@ -121,19 +141,32 @@ body {
     page-break-before: auto;
     page-break-after: auto;
   }
-  
+
+  /* Avoid page breaks inside sections where possible */
   #resume-preview section {
     page-break-inside: avoid;
+    margin-top: 0.5rem !important;
   }
 
+  /* Typography tweaks to fit */
   #resume-preview header h1 {
-    font-size: 2.5rem !important;
+    font-size: 14pt !important;
+    margin-bottom: 0.25rem !important;
+    padding-bottom: 2px !important;
   }
   #resume-preview header p {
-    font-size: 1.1rem !important;
+    font-size: 1.05rem !important;
   }
   #resume-preview a {
     color: hsl(var(--primary)) !important;
     text-decoration: underline !important;
+  }
+
+  #resume-preview p, #resume-preview li {
+    line-height: 1.15 !important;
+    margin-bottom: 0.15rem !important;
+  }
+  #resume-preview ul {
+    margin-top: 0.25rem !important;
   }
 }
