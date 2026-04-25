@@ -1,15 +1,12 @@
 "use client";
 import React from 'react';
 import { Button } from '@/components/ui/button';
-import { Download, LogIn, LogOut } from 'lucide-react';
-import AiOptimizerDialog from './ai-optimizer-dialog';
-import DesignPanel from './design-panel';
+import { Download, LogOut } from 'lucide-react';
 import { useAuth } from '@/hooks/use-auth';
-import { Avatar, AvatarFallback, AvatarImage } from './ui/avatar';
 import { useReactToPrint } from 'react-to-print';
 
 interface HeaderProps {
-    previewRef: React.RefObject<HTMLDivElement>;
+    previewRef: React.RefObject<HTMLDivElement | null>;
 }
 
 const GoogleIcon = (props: React.SVGProps<SVGSVGElement>) => (
@@ -25,29 +22,10 @@ const GoogleIcon = (props: React.SVGProps<SVGSVGElement>) => (
 export default function Header({ previewRef }: HeaderProps) {
     const { user, signInWithGoogle, signOut, loading } = useAuth();
 
-    const print = useReactToPrint({
-        // provide both content and contentRef so react-to-print validation doesn't warn
-        content: () => previewRef.current,
+    const handleDownloadPdf = useReactToPrint({
         contentRef: previewRef,
         documentTitle: 'Resume',
-        pageStyle: `
-            @page { size: A4 portrait; margin: 0; }
-            @media print {
-              html, body { -webkit-print-color-adjust: exact; color-adjust: exact; }
-              .no-print { display: none !important; }
-            }
-        `
     });
-
-    const handlePrint = () => {
-        if (!previewRef?.current) {
-            // preview not mounted or ref not passed
-            alert('Nothing to print — resume preview is not mounted.');
-            return;
-        }
-        // pass the preview node as optional-content to the print call to avoid runtime validation errors
-        print?.(() => previewRef.current);
-    };
 
     return (
         <header className="flex items-center justify-between p-4 border-b bg-card flex-shrink-0 z-10 no-print">
@@ -55,7 +33,7 @@ export default function Header({ previewRef }: HeaderProps) {
             <div className="flex items-center gap-2">
                 {user && (
                     <>
-                        <Button onClick={handlePrint}>
+                        <Button onClick={() => handleDownloadPdf()}>
                             <Download className="mr-2 h-4 w-4" />
                             Download PDF
                         </Button>
@@ -63,10 +41,6 @@ export default function Header({ previewRef }: HeaderProps) {
                             <LogOut className="mr-2 h-4 w-4" />
                             Sign Out
                         </Button>
-                        {/* <Avatar>
-                            <AvatarImage src={user.photoURL ?? undefined} />
-                            <AvatarFallback>{user.displayName?.charAt(0)}</AvatarFallback>
-                        </Avatar> */}
                     </>
                 )}
                 {!user && !loading && (
