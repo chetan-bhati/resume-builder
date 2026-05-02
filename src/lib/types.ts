@@ -37,6 +37,7 @@ export const educationSchema = z.object({
   startDate: z.string().optional(),
   endDate: z.string().optional(),
   description: z.string().optional(),
+  location: z.string().optional(),
 });
 export type Education = z.infer<typeof educationSchema>;
 
@@ -93,7 +94,7 @@ export const resumeDataSchema = z.object({
 export type ResumeData = z.infer<typeof resumeDataSchema>;
 
 export const designSchema = z.object({
-    template: z.enum(['classic', 'modern', 'minimalist']).default('modern'),
+    template: z.enum(['classic', 'modern', 'minimalist', 'ats']).default('ats'),
     primaryColor: z.string().default('#3F51B5'),
     fontSize: z.string().default('10'),
     fontFamily: z.string().default('Inter'),

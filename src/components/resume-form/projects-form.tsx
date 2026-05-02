@@ -12,6 +12,8 @@ import { Textarea } from '@/components/ui/textarea';
 import { Button } from '@/components/ui/button';
 import { Plus, Trash2 } from 'lucide-react';
 import { useEffect, useState } from 'react';
+import { calculateAtsScore } from '@/lib/ats-scorer';
+import { AtsScoreBadge } from '../ats-score-badge';
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from '../ui/accordion';
 
 export default function ProjectsForm() {
@@ -55,18 +57,32 @@ export default function ProjectsForm() {
     handleBlur();
   }
 
+  const atsScore = isInitialized ? calculateAtsScore(resumeData).sections.projects : null;
+
   return (
     <Card>
-      <CardHeader>
-        <CardTitle>Projects</CardTitle>
-        <CardDescription>Showcase your work by adding personal or professional projects.</CardDescription>
+      <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+        <div className="space-y-1">
+            <CardTitle>Projects</CardTitle>
+            <CardDescription>Showcase your work by adding personal or professional projects.</CardDescription>
+        </div>
+        {atsScore && (
+            <AtsScoreBadge 
+                score={atsScore.score} 
+                maxScore={atsScore.maxScore} 
+                tips={atsScore.tips} 
+                label="Section Score"
+            />
+        )}
       </CardHeader>
       <CardContent>
         <Form {...form}>
           <div className="space-y-4" onBlur={handleBlur}>
             <Accordion type="multiple" value={openItems} onValueChange={setOpenItems} className="w-full">
-              {fields.map((field, index) => (
-                <AccordionItem key={field.id} value={field.id} className="border-b-0">
+              {fields.map((field, index) => {
+                const dataId = form.getValues(`projects.${index}.id`);
+                return (
+                <AccordionItem key={field.id} value={dataId} className="border-b-0">
                   <div className="flex justify-between items-center bg-muted p-2 rounded-t-md border">
                     <AccordionTrigger className="flex-1 text-sm font-medium py-2 text-left">
                         {form.watch(`projects.${index}.name`) || 'New Project'}
@@ -82,7 +98,7 @@ export default function ProjectsForm() {
                     </div>
                   </AccordionContent>
                 </AccordionItem>
-              ))}
+              )})}
             </Accordion>
             <Button variant="outline" onClick={handleAddNew}><Plus className="mr-2 h-4 w-4" /> Add Project</Button>
           </div>

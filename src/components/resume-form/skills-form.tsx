@@ -11,6 +11,8 @@ import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
 import { Plus, Trash2 } from 'lucide-react';
 import { useEffect, useState } from 'react';
+import { calculateAtsScore } from '@/lib/ats-scorer';
+import { AtsScoreBadge } from '../ats-score-badge';
 import { Badge } from '../ui/badge';
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from '../ui/accordion';
 
@@ -65,8 +67,9 @@ export default function SkillsForm() {
       if (skillName) {
         const currentSkills = form.getValues(`skills.${categoryIndex}.skills`);
         const newSkill: SkillItem = { id: crypto.randomUUID(), name: skillName };
+        const currentCategory = form.getValues(`skills.${categoryIndex}`);
         update(categoryIndex, {
-            ...fields[categoryIndex],
+            ...currentCategory,
             skills: [...currentSkills, newSkill]
         });
         setNewSkillInputs(prev => ({ ...prev, [categoryId]: '' }));
@@ -90,11 +93,23 @@ export default function SkillsForm() {
     }
   };
 
+  const atsScore = isInitialized ? calculateAtsScore(resumeData).sections.skills : null;
+
   return (
     <Card>
-      <CardHeader>
-        <CardTitle>Skills</CardTitle>
-        <CardDescription>Group your skills by category for better organization.</CardDescription>
+      <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+        <div className="space-y-1">
+            <CardTitle>Skills</CardTitle>
+            <CardDescription>Group your skills by category for better organization.</CardDescription>
+        </div>
+        {atsScore && (
+            <AtsScoreBadge 
+                score={atsScore.score} 
+                maxScore={atsScore.maxScore} 
+                tips={atsScore.tips} 
+                label="Section Score"
+            />
+        )}
       </CardHeader>
       <CardContent>
         <Form {...form}>
@@ -102,8 +117,9 @@ export default function SkillsForm() {
                <Accordion type="multiple" value={openItems} onValueChange={setOpenItems} className="w-full">
                     {fields.map((field, index) => {
                         const currentSkills = form.watch(`skills.${index}.skills`);
+                        const dataId = form.getValues(`skills.${index}.id`);
                         return (
-                        <AccordionItem key={field.id} value={field.id} className="border-b-0">
+                        <AccordionItem key={field.id} value={dataId} className="border-b-0">
                            <div className="flex justify-between items-center bg-muted p-2 rounded-t-md border">
                                 <AccordionTrigger className="flex-1 text-sm font-medium py-2 text-left">
                                      <FormField

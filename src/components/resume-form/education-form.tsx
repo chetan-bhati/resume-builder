@@ -10,6 +10,8 @@ import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
 import { Plus, Trash2 } from 'lucide-react';
 import { useEffect, useState } from 'react';
+import { calculateAtsScore } from '@/lib/ats-scorer';
+import { AtsScoreBadge } from '../ats-score-badge';
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from '../ui/accordion';
 import { Textarea } from '../ui/textarea';
 
@@ -54,18 +56,32 @@ export default function EducationForm() {
     handleBlur();
   }
 
+  const atsScore = isInitialized ? calculateAtsScore(resumeData).sections.education : null;
+
   return (
     <Card>
-      <CardHeader>
-        <CardTitle>Education</CardTitle>
-        <CardDescription>List your academic background and achievements.</CardDescription>
+      <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+        <div className="space-y-1">
+            <CardTitle>Education</CardTitle>
+            <CardDescription>List your academic background and achievements.</CardDescription>
+        </div>
+        {atsScore && (
+            <AtsScoreBadge 
+                score={atsScore.score} 
+                maxScore={atsScore.maxScore} 
+                tips={atsScore.tips} 
+                label="Section Score"
+            />
+        )}
       </CardHeader>
       <CardContent>
         <Form {...form}>
           <div className="space-y-4" onBlur={handleBlur}>
             <Accordion type="multiple" value={openItems} onValueChange={setOpenItems} className="w-full">
-              {fields.map((field, index) => (
-                <AccordionItem key={field.id} value={field.id} className="border-b-0">
+              {fields.map((field, index) => {
+                const dataId = form.getValues(`education.${index}.id`);
+                return (
+                <AccordionItem key={field.id} value={dataId} className="border-b-0">
                   <div className="flex justify-between items-center bg-muted p-2 rounded-t-md border">
                     <AccordionTrigger className="flex-1 text-sm font-medium py-2 text-left">
                         {form.watch(`education.${index}.degree`) || 'New Degree'} at {form.watch(`education.${index}.institution`) || 'New Institution'}
@@ -74,7 +90,10 @@ export default function EducationForm() {
                   </div>
                   <AccordionContent className="p-4 border border-t-0 rounded-b-md">
                     <div className="space-y-4">
-                      <FormField control={form.control} name={`education.${index}.institution`} render={({ field }) => ( <FormItem><FormLabel>Institution</FormLabel><FormControl><Input {...field} /></FormControl><FormMessage /></FormItem> )} />
+                      <div className="grid grid-cols-2 gap-4">
+                        <FormField control={form.control} name={`education.${index}.institution`} render={({ field }) => ( <FormItem><FormLabel>Institution</FormLabel><FormControl><Input {...field} /></FormControl><FormMessage /></FormItem> )} />
+                        <FormField control={form.control} name={`education.${index}.location`} render={({ field }) => ( <FormItem><FormLabel>Location</FormLabel><FormControl><Input placeholder="e.g., Indore, India" {...field} value={field.value ?? ''} /></FormControl><FormMessage /></FormItem> )} />
+                      </div>
                       <FormField control={form.control} name={`education.${index}.degree`} render={({ field }) => ( <FormItem><FormLabel>Degree/Certificate</FormLabel><FormControl><Input {...field} /></FormControl><FormMessage /></FormItem> )} />
                       <div className="grid grid-cols-2 gap-4">
                         <FormField control={form.control} name={`education.${index}.startDate`} render={({ field }) => ( <FormItem><FormLabel>Start Date</FormLabel><FormControl><Input placeholder="e.g., Aug 2016" {...field} value={field.value ?? ''} /></FormControl><FormMessage /></FormItem> )} />
@@ -84,7 +103,7 @@ export default function EducationForm() {
                     </div>
                   </AccordionContent>
                 </AccordionItem>
-              ))}
+              )})}
             </Accordion>
             <Button variant="outline" onClick={handleAddNew}><Plus className="mr-2 h-4 w-4" /> Add Education</Button>
           </div>

@@ -12,6 +12,8 @@ import { Textarea } from '@/components/ui/textarea';
 import { Button } from '@/components/ui/button';
 import { Plus, Trash2 } from 'lucide-react';
 import { useEffect } from 'react';
+import { calculateAtsScore } from '@/lib/ats-scorer';
+import { AtsScoreBadge } from '../ats-score-badge';
 
 export default function PersonalDetailsForm() {
   const { resumeData, setResumeData, isInitialized } = useResumeStore();
@@ -41,11 +43,23 @@ export default function PersonalDetailsForm() {
     });
   };
 
+  const atsScore = isInitialized ? calculateAtsScore(resumeData).sections.summary : null;
+
   return (
     <Card>
-      <CardHeader>
-        <CardTitle>Personal Details</CardTitle>
-        <CardDescription>Let's start with the basics. This information will appear at the top of your resume.</CardDescription>
+      <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+        <div className="space-y-1">
+            <CardTitle>Personal Details</CardTitle>
+            <CardDescription>Let's start with the basics. This information will appear at the top of your resume.</CardDescription>
+        </div>
+        {atsScore && (
+            <AtsScoreBadge 
+                score={atsScore.score} 
+                maxScore={atsScore.maxScore} 
+                tips={atsScore.tips} 
+                label="Section Score"
+            />
+        )}
       </CardHeader>
       <CardContent>
         <Form {...form}>

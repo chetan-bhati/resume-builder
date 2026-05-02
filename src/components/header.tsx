@@ -1,9 +1,13 @@
 "use client";
 import React from 'react';
 import { Button } from '@/components/ui/button';
-import { Download, LogOut } from 'lucide-react';
+import { Download, LogOut, CheckCircle } from 'lucide-react';
 import { useAuth } from '@/hooks/use-auth';
 import { useReactToPrint } from 'react-to-print';
+import { useResumeStore } from '@/hooks/use-resume-store';
+import { calculateAtsScore } from '@/lib/ats-scorer';
+import { AtsScoreBadge } from './ats-score-badge';
+import DesignPanel from './design-panel';
 
 interface HeaderProps {
     previewRef: React.RefObject<HTMLDivElement | null>;
@@ -21,16 +25,32 @@ const GoogleIcon = (props: React.SVGProps<SVGSVGElement>) => (
 
 export default function Header({ previewRef }: HeaderProps) {
     const { user, signInWithGoogle, signOut, loading } = useAuth();
+    const { resumeData, isInitialized } = useResumeStore();
 
     const handleDownloadPdf = useReactToPrint({
         contentRef: previewRef,
         documentTitle: 'Resume',
     });
 
+    const atsScore = isInitialized ? calculateAtsScore(resumeData) : null;
+
     return (
         <header className="flex items-center justify-between p-4 border-b bg-card flex-shrink-0 z-10 no-print">
-            <h1 className="text-xl font-bold text-primary">ResumeForge</h1>
+            <div className="flex items-center gap-6">
+                <h1 className="text-xl font-bold text-primary">ResumeForge</h1>
+                {atsScore && (
+                    <div className="hidden sm:flex border-l pl-6">
+                        <AtsScoreBadge 
+                            score={atsScore.totalScore} 
+                            maxScore={100} 
+                            label="Overall ATS Score"
+                            showProgress
+                        />
+                    </div>
+                )}
+            </div>
             <div className="flex items-center gap-2">
+                <DesignPanel />
                 {user && (
                     <>
                         <Button onClick={() => handleDownloadPdf()}>

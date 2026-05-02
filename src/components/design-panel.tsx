@@ -4,6 +4,13 @@ import {
   PopoverContent,
   PopoverTrigger,
 } from "@/components/ui/popover"
+import {
+    Select,
+    SelectContent,
+    SelectItem,
+    SelectTrigger,
+    SelectValue,
+} from "@/components/ui/select"
 import { Button } from "@/components/ui/button"
 import { Label } from "@/components/ui/label"
 import { Slider } from "@/components/ui/slider"
@@ -34,7 +41,30 @@ export default function DesignPanel() {
               Adjust the look and feel of your resume.
             </p>
           </div>
-          <div className="grid gap-2">
+            <div className="grid grid-cols-3 items-center gap-4">
+              <Label>Template</Label>
+              <div className="col-span-2">
+                <Select
+                    value={design.template}
+                    onValueChange={(value) => setDesign(d => { d.template = value as any })}
+                >
+                    <SelectTrigger className="w-full">
+                        <SelectValue placeholder="Select Template" />
+                    </SelectTrigger>
+                    <SelectContent>
+                        <SelectItem value="modern">Modern</SelectItem>
+                        <SelectItem value="classic">Classic</SelectItem>
+                        <SelectItem value="minimalist">Minimalist</SelectItem>
+                        <SelectItem value="ats">ATS Optimized</SelectItem>
+                    </SelectContent>
+                </Select>
+                {design.template === 'ats' && (
+                    <p className="text-[10px] text-muted-foreground mt-1">
+                        Best for automated scanners. Removes icons and complex formatting.
+                    </p>
+                )}
+              </div>
+            </div>
             <div className="grid grid-cols-3 items-center gap-4">
               <Label>Primary Color</Label>
               <div className="col-span-2 flex gap-2">
@@ -43,8 +73,9 @@ export default function DesignPanel() {
                   <Tooltip key={color}>
                       <TooltipTrigger asChild>
                         <button
+                          disabled={design.template === 'ats'}
                           onClick={() => setDesign(d => { d.primaryColor = color })}
-                          className={`w-6 h-6 rounded-full border-2 ${design.primaryColor === color ? 'border-primary' : 'border-transparent'}`}
+                          className={`w-6 h-6 rounded-full border-2 ${design.primaryColor === color ? 'border-primary' : 'border-transparent'} ${design.template === 'ats' ? 'opacity-50 cursor-not-allowed' : ''}`}
                           style={{ backgroundColor: color }}
                         />
                       </TooltipTrigger>
@@ -72,7 +103,6 @@ export default function DesignPanel() {
                       <TooltipContent><p>Adjust the base font size for body text.</p></TooltipContent>
                   </Tooltip>
               </TooltipProvider>
-            </div>
           </div>
         </div>
       </PopoverContent>
