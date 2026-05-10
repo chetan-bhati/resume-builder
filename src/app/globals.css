@@ -120,13 +120,28 @@ body {
   }
 
   /* Reset layout for print */
-  #resume-preview-wrapper,
-  #resume-preview-wrapper * {
-    overflow: visible !important;
+  #resume-preview-wrapper {
     display: block !important;
-    position: static !important;
+    overflow: visible !important;
+    background: #fff !important;
     height: auto !important;
     min-height: 0 !important;
+    position: static !important;
+  }
+
+  /* Target the internal Radix viewport */
+  [data-radix-scroll-area-viewport] {
+    display: block !important;
+    overflow: visible !important;
+    height: auto !important;
+    min-height: 0 !important;
+    position: static !important;
+  }
+
+  /* Hide Radix scrollbars and other internal helpers */
+  [data-radix-scroll-area-scrollbar],
+  .radix-scroll-area-scrollbar {
+    display: none !important;
   }
 
   #resume-preview {
@@ -137,7 +152,10 @@ body {
     box-shadow: none !important;
     border: none !important;
     background: #fff !important;
+    position: relative !important;
+    z-index: 1 !important;
   }
+
 
   /* Prevent awkward page breaks */
   section, .mb-6, .mb-4 {
