@@ -7,7 +7,7 @@ import { Mail, Phone, Globe, MapPin, ExternalLink, Briefcase, GraduationCap, Sta
 import { Skeleton } from './ui/skeleton';
 
 const Section = ({ title, icon, children, className, isAts }: { title: string, icon: React.ReactNode, children: React.ReactNode, className?: string, isAts?: boolean }) => (
-    <section className={`mb-6 break-inside-avoid ${className}`}>
+    <section className={`mb-6 ${className}`}>
         <h2 className={`flex items-center text-lg font-bold uppercase mb-2 ${isAts ? 'border-b-2 pb-1' : ''}`} style={{ color: isAts ? '#000' : 'var(--preview-primary-color)', borderColor: isAts ? '#000' : 'var(--preview-primary-color)' }}>
             {!isAts && icon}
             <span className={!isAts ? "ml-2" : ""}>{title}</span>
@@ -186,7 +186,7 @@ const ResumePreview = React.forwardRef<HTMLDivElement>((props, ref) => {
     }
 
     return (
-        <div ref={ref} id="resume-preview" className="bg-white text-gray-800 shadow-lg rounded-lg w-full max-w-[210mm] min-h-[297mm] mx-auto p-12 transition-all duration-300 print:shadow-none print:rounded-none print:w-[210mm] print:p-0 print:m-0">
+        <div ref={ref} id="resume-preview" className="bg-white text-gray-800 shadow-lg rounded-lg w-full max-w-[210mm] min-h-[297mm] mx-auto p-12 transition-all duration-300 print:shadow-none print:rounded-none">
             <div style={styles}>
                 {/* Header */}
                 <header className={`${isAts ? 'text-left' : 'text-center'} mb-6`}>

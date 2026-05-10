@@ -95,53 +95,30 @@ body {
 @media print {
   @page {
     size: A4 portrait;
-    margin: 10mm;
-  }
-
-  /* Force all elements to show content during print */
-  * {
-    -webkit-print-color-adjust: exact !important;
-    print-color-adjust: exact !important;
+    margin: 20 0 0 0;
   }
 
   html,
   body {
     background: #fff !important;
+    -webkit-print-color-adjust: exact !important;
+    print-color-adjust: exact !important;
     margin: 0 !important;
     padding: 0 !important;
-    width: 210mm !important;
-    height: auto !important;
-    min-height: 0 !important;
-    overflow: visible !important;
   }
 
   .no-print {
     display: none !important;
   }
 
-  /* Reset layout for print */
-  #resume-preview-wrapper,
-  #resume-preview-wrapper * {
-    overflow: visible !important;
+  #resume-preview-wrapper {
     display: block !important;
-    position: static !important;
-    height: auto !important;
-    min-height: 0 !important;
+    overflow: visible !important;
+    background-color: #fff !important;
   }
 
   #resume-preview {
-    width: 210mm !important;
-    max-width: 210mm !important;
-    margin: 0 !important;
-    padding: 10mm !important;
+    margin: 0 auto !important;
     box-shadow: none !important;
-    border: none !important;
-    background: #fff !important;
-  }
-
-  /* Prevent awkward page breaks */
-  section, .mb-6, .mb-4 {
-    break-inside: avoid;
-    page-break-inside: avoid;
   }
 }
