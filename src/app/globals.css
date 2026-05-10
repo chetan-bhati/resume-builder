@@ -95,30 +95,63 @@ body {
 @media print {
   @page {
     size: A4 portrait;
-    margin: 20 0 0 0;
+    margin: 15mm 10mm 15mm 10mm; /* Added generous top/bottom margins */
+  }
+
+  /* Force colors and remove background styling */
+  * {
+    -webkit-print-color-adjust: exact !important;
+    print-color-adjust: exact !important;
   }
 
   html,
   body {
     background: #fff !important;
-    -webkit-print-color-adjust: exact !important;
-    print-color-adjust: exact !important;
     margin: 0 !important;
     padding: 0 !important;
+    width: 210mm !important;
+    height: auto !important;
+    min-height: 0 !important;
+    overflow: visible !important;
   }
 
   .no-print {
     display: none !important;
   }
 
-  #resume-preview-wrapper {
+  /* Ensure the preview container and its ancestors are visible and paginated */
+  #resume-preview-wrapper,
+  #resume-preview-wrapper div,
+  [data-radix-scroll-area-viewport] {
     display: block !important;
     overflow: visible !important;
-    background-color: #fff !important;
+    position: static !important;
+    height: auto !important;
+    min-height: 0 !important;
+    background: transparent !important;
+  }
+
+  /* Hide scrollbars specifically */
+  [data-radix-scroll-area-scrollbar],
+  .radix-scroll-area-scrollbar {
+    display: none !important;
   }
 
   #resume-preview {
-    margin: 0 auto !important;
+    width: 210mm !important;
+    max-width: 210mm !important;
+    margin: 0 !important;
+    padding: 0 !important; /* Page margin handles spacing */
     box-shadow: none !important;
+    border: none !important;
+    background: #fff !important;
+  }
+
+  /* Prevent sections from being split across pages */
+  section, 
+  .mb-6, 
+  .mb-4 {
+    break-inside: avoid;
+    page-break-inside: avoid;
   }
 }
